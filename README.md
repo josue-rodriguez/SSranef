@@ -1,1 +1,1 @@
-# SSranef - Spike-and-slab selection with random effects
+# SSranef: Random effects selection with spike-and-slab priors
