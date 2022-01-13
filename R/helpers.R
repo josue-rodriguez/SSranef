@@ -28,15 +28,15 @@ make_custom_priors_alpha <- function(custom_priors) {
   return(custom_priors)
 }
 
-ranef_alpha_text1 <-
+alpha_model_text1 <-
   "model{
   for (i in 1:N) {
     # likelihood
-    y[i] ~ dnorm(alpha_j[unit[i]], prec)
+    y[i] ~ dnorm(alpha_j[unit[i]], precision)
   }
   for (j in 1:J) {"
 
-ranef_alpha_text2 <-
+alpha_model_text2 <-
    "
     # non-centered parameterization
     alpha_raw[j] ~ dnorm(0, 1)
@@ -49,12 +49,12 @@ ranef_alpha_text2 <-
 
 make_model_text_alpha <- function(priors_list) {
   model_text <- paste0(
-    ranef_alpha_text1, "\n    ",
+    alpha_model_text1, "\n    ",
     priors_list$gamma,
-    ranef_alpha_text2, "  ",
+    alpha_model_text2, "  ",
     priors_list$alpha, "\n  ",
     priors_list$tau, "\n  ",
-    "prec <- pow(sigma, -2)", "\n  ",
+    "precision <- pow(sigma, -2)", "\n  ",
     priors_list$sigma, "\n",
     "}"
 
@@ -72,40 +72,67 @@ make_model_text_alpha <- function(priors_list) {
 #'
 #'
 #'
-ranef_beta_rjags <- "
-  model {
+#'
+
+make_default_priors_beta <- function() {
+  priors_list <- list(
+    gamma = "gamma[j] ~ dbern(0.5)",
+    alpha = "alpha ~ dnorm(0, 1)",
+    beta = "beta ~ dnorm(0, 1)",
+    tau1 = "tau1 ~ dt(0, 1, 3)T(0, )",
+    tau2 = "tau2 ~ dt(0, 1, 3)T(0, )",
+    sigma = "sigma ~ dt(0, 1, 3)T(0, )",
+    rho = "rho ~ dunif(-1, 1)"
+  )
+  return(priors_list)
+}
+
+
+
+
+beta_model_text1 <-
+  "model {
     for (i in 1:N) {
+      # likelihood
       y[i] ~ dnorm(mu[i], precision)
-      mu[i] <- inprod(X[i, ], B[id[i],  ])
+      mu[i] <- inprod(X[i, ], B[unit[i],  ])
     }
     for (j in 1:J) {
+      # prior for inclusion variable"
+
+beta_model_text2 <-
+  "
       # random intercept
       z1[j] ~ dnorm(0, 1)
-      theta1[j] <- sd_alpha * z1[j]
+      theta1[j] <- tau1 * z1[j]
 
-     # random slope
+      # random slope
       z2[j] ~ dnorm(0, 1)
-      theta2raw[j] <- cor * z1[j] + sqrt(1 - cor^2) * z2[j]
-
-      gamma[j] ~ dbern(0.5)
-      # pi[j] ~ dbeta(1, 1)
+      theta2raw[j] <- rho * z1[j] + sqrt(1 - rho^2) * z2[j]
       theta2star[j] <- theta2raw[j] * gamma[j]
-
-      theta2[j] <- sd_beta * theta2star[j]
-
+      theta2[j] <- tau2 * theta2star[j]
       B[j, 1] <- alpha + theta1[j]
       B[j, 2] <- beta + theta2[j]
     }
+  # priors"
+
+make_model_text_beta <- function(priors_list) {
+  model_text <- paste0(
+    beta_model_text1, "\n      ",
+    priors_list$gamma,
+    beta_model_text2, "\n  ",
+    priors_list$alpha, "\n  ",
+    priors_list$beta, "\n  ",
+    priors_list$tau1, "\n  ",
+    priors_list$tau2, "\n  ",
+    "precision <- pow(sigma, -2)", "\n  ",
+    priors_list$sigma, "\n  ",
+    priors_list$rho, "\n",
+    "}"
+
+  )
+  return(model_text)
+}
 
 
-  alpha ~ dnorm(0, 0.01)
-  beta ~ dnorm(0, 0.01)
-
-  precision <- pow(sigma, -2)
-  sigma ~ dt(0, 1, 3)T(0, )
-
-  sd_alpha ~ dt(0, 1, 3)T(0, )
-  sd_beta ~ dt(0, 1, 3)T(0, )
-  cor ~ dunif(-0.8, 0.8)
-  }
-"
+make_model_text_beta(make_default_priors_beta()) %>% cat()

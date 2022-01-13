@@ -1,4 +1,4 @@
-#' ss_ranef_in
+#' ss_ranef_alpha
 #'
 #'
 #'
@@ -7,7 +7,7 @@
 # library(dplyr)
 
 
-ss_ranef_int <- function(y, X, unit, burnin = 1000, iter = 1000, chains = 4, priors = NULL) {
+ss_ranef_alpha <- function(y, unit, burnin = 1000, iter = 1000, chains = 4, priors = NULL) {
   args <- match.call()
 
   if (is.null(priors)) {
@@ -30,7 +30,7 @@ ss_ranef_int <- function(y, X, unit, burnin = 1000, iter = 1000, chains = 4, pri
 
   if (!is.null(burnin)) update(jags_fit, burnin)
 
-  vars2monitor <- c("alpha", "gamma", "lambda", "sigma", "tau")
+  vars2monitor <- c("alpha", "gamma", "lambda", "sigma", "tau", "theta")
   mcmc_list <- coda.samples(jags_fit,
                             variable.names = vars2monitor,
                             n.iter = iter)
@@ -41,9 +41,12 @@ ss_ranef_int <- function(y, X, unit, burnin = 1000, iter = 1000, chains = 4, pri
   cnames <- colnames(post_samps)
   gamma_mask <- grepl("gamma\\[[0-9]+\\]", cnames)
   lambda_mask <- grepl("lambda\\[[0-9]+\\]", cnames)
+  theta_mask <- grepl("theta\\[[0-9]+\\]", cnames)
 
   cnames[gamma_mask] <- paste("gamma", og_units, sep = "_")
   cnames[lambda_mask] <- paste("lambda", og_units, sep = "_")
+  cnames[theta_mask] <- paste("theta", og_units, sep = "_")
+
 
   colnames(post_samps) <- cnames
 
@@ -57,7 +60,69 @@ ss_ranef_int <- function(y, X, unit, burnin = 1000, iter = 1000, chains = 4, pri
 
 
 
-# x <- lme4::sleepstudy %>% janitor::clean_names()
-# tst <- ss_ranef_int(y = x$reaction, X = NULL, unit = x$subject, priors = list())
+# x <- mlmRev::bdf %>% group_by(schoolNR) %>% slice_sample(n = 3)
+# tst <- ss_ranef_int(y = x$IQ.verb, X = NULL, unit = x$schoolNR)
+#
+# colMeans(tst$posterior_samples)
+
+#' ss_ranef_beta
+#'
+#'
+#'
+#'
+#' @importFrom rjags jags.model coda.samples update
+
+
+ss_ranef_beta <- function(y, X, unit, burnin = 1000, iter = 1000, chains = 4, priors = NULL) {
+  args <- match.call()
+
+  if (is.null(priors)) {
+    priors_list <- make_default_priors_beta()
+  } else {
+    priors_list <- make_custom_priors_beta(priors)
+  }
+
+  model_text <- make_model_text_beta(priors_list = priors_list)
+  og_units <- unique(unit)
+  X <- cbind(1, X)
+  data_list <- list(y = y,
+                    X = X,
+                    N = length(y),
+                    unit = as.numeric(as.factor(unit)),
+                    J = length(unique(unit)))
+
+  jags_fit <- jags.model(textConnection(model_text),
+                         data = data_list,
+                         n.chains = chains)
+
+  if (!is.null(burnin)) update(jags_fit, burnin)
+
+  vars2monitor <- c("alpha", "beta", "gamma", "sigma", "tau1", "tau2", "theta1", "theta2")
+  mcmc_list <- coda.samples(jags_fit,
+                            variable.names = vars2monitor,
+                            n.iter = iter)
+
+  post_samps <- do.call(rbind, mcmc_list)
+
+  # clean up column names
+  cnames <- colnames(post_samps)
+  gamma_mask <- grepl("gamma\\[[0-9]+\\]", cnames)
+  theta_mask <- grepl("theta\\[[0-9]+\\]", cnames)
+
+  cnames[gamma_mask] <- paste("gamma", og_units, sep = "_")
+  cnames[theta_mask] <- paste("theta1", og_units, sep = "_")
+  cnames[theta_mask] <- paste("theta2", og_units, sep = "_")
+
+
+  colnames(post_samps) <- cnames
+
+  ret <- list(
+    posterior_samples = post_samps,
+    data_list = data_list,
+    call = args
+  )
+  return(ret)
+}
+
 
 
