@@ -26,5 +26,5 @@ library(SSranef)
 
 d <- lme4::sleepstudy
 
-# ss_ranef_beta(y = d$Reaction, X = d$Days, unit = d$Subject)
+ss_ranef_beta(y = d$Reaction, X = d$Days, unit = d$Subject)
 ```

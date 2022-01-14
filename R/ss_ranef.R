@@ -7,7 +7,8 @@
 # library(dplyr)
 
 
-ss_ranef_alpha <- function(y, unit, burnin = 1000, iter = 1000, chains = 4, priors = NULL) {
+ss_ranef_alpha <- function(y, unit, burnin = 1000, iter = 1000, chains = 4, priors = NULL,
+                           vars2monitor = c("alpha", "gamma", "lambda", "sigma", "tau", "theta")) {
   args <- match.call()
 
   if (is.null(priors)) {
@@ -30,7 +31,6 @@ ss_ranef_alpha <- function(y, unit, burnin = 1000, iter = 1000, chains = 4, prio
 
   if (!is.null(burnin)) update(jags_fit, burnin)
 
-  vars2monitor <- c("alpha", "gamma", "lambda", "sigma", "tau", "theta")
   mcmc_list <- coda.samples(jags_fit,
                             variable.names = vars2monitor,
                             n.iter = iter)
@@ -73,7 +73,8 @@ ss_ranef_alpha <- function(y, unit, burnin = 1000, iter = 1000, chains = 4, prio
 #' @importFrom rjags jags.model coda.samples update
 
 
-ss_ranef_beta <- function(y, X, unit, burnin = 1000, iter = 1000, chains = 4, priors = NULL) {
+ss_ranef_beta <- function(y, X, unit, burnin = 1000, iter = 1000, chains = 4, priors = NULL,
+                          vars2monitor = c("alpha", "beta", "gamma", "sigma", "tau1", "tau2", "theta1", "theta2")) {
   args <- match.call()
 
   if (is.null(priors)) {
@@ -97,7 +98,6 @@ ss_ranef_beta <- function(y, X, unit, burnin = 1000, iter = 1000, chains = 4, pr
 
   if (!is.null(burnin)) update(jags_fit, burnin)
 
-  vars2monitor <- c("alpha", "beta", "gamma", "sigma", "tau1", "tau2", "theta1", "theta2")
   mcmc_list <- coda.samples(jags_fit,
                             variable.names = vars2monitor,
                             n.iter = iter)
@@ -107,11 +107,12 @@ ss_ranef_beta <- function(y, X, unit, burnin = 1000, iter = 1000, chains = 4, pr
   # clean up column names
   cnames <- colnames(post_samps)
   gamma_mask <- grepl("gamma\\[[0-9]+\\]", cnames)
-  theta_mask <- grepl("theta\\[[0-9]+\\]", cnames)
+  theta1_mask <- grepl("theta1\\[[0-9]+\\]", cnames)
+  theta2_mask <- grepl("theta2\\[[0-9]+\\]", cnames)
 
   cnames[gamma_mask] <- paste("gamma", og_units, sep = "_")
-  cnames[theta_mask] <- paste("theta1", og_units, sep = "_")
-  cnames[theta_mask] <- paste("theta2", og_units, sep = "_")
+  cnames[theta1_mask] <- paste("theta1", og_units, sep = "_")
+  cnames[theta2_mask] <- paste("theta2", og_units, sep = "_")
 
 
   colnames(post_samps) <- cnames
@@ -123,6 +124,4 @@ ss_ranef_beta <- function(y, X, unit, burnin = 1000, iter = 1000, chains = 4, pr
   )
   return(ret)
 }
-
-
 

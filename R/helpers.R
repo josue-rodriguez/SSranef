@@ -1,12 +1,4 @@
-#'
-#'
-#'
-#'
-#'
-#'
-#'
-#'
-
+# --- helpers for alpha model ---
 priors_list <- make_default_priors_alpha()
 
 make_default_priors_alpha <- function() {
@@ -64,15 +56,7 @@ make_model_text_alpha <- function(priors_list) {
 
 
 
-#'
-#'
-#'
-#'
-#'
-#'
-#'
-#'
-#'
+# --- helpers for beta model ---
 
 make_default_priors_beta <- function() {
   priors_list <- list(
@@ -135,4 +119,3 @@ make_model_text_beta <- function(priors_list) {
 }
 
 
-make_model_text_beta(make_default_priors_beta()) %>% cat()
