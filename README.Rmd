@@ -33,10 +33,29 @@ devtools::install_github("josue-rodriguez/SSranef")
 
 This is a basic example which shows you how to solve a common problem:
 
-```{r example, eval=FALSE}
+```{r example}
 library(SSranef)
+library(rjags)
 
 d <- lme4::sleepstudy
-
-ss_ranef_beta(y = d$Reaction, X = d$Days, unit = d$Subject)
 ```
+
+
+```{r}
+d$y <- c(scale(d$Reaction))
+alpha <- ss_ranef_alpha(y = d$y, unit = d$Subject)
+posterior_summary(alpha)
+ranef_summary(alpha)
+```
+
+```{r}
+beta <- ss_ranef_beta(y = d$y, X = d$Days, unit = d$Subject)
+posterior_summary(beta)
+ranef_summary(beta)
+```
+
+```{r include=FALSE, eval=FALSE}
+library(lme4)
+summary(lmer(y ~ 1 + (1|Subject), data = d))
+```
+

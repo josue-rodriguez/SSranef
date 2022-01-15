@@ -1,0 +1,108 @@
+#' posterior_summary
+#'
+#' @export
+
+posterior_summary <- function(obj, ci = 0.9, as_df = FALSE) {
+
+  type <- obj$call[1]
+  if (grepl("beta", type)) {
+    cnames <- c("alpha", "beta", "sigma", "tau1", "tau2", "rho")
+  } else if (grepl("alpha", type)) {
+    cnames <- c("alpha", "sigma", "tau")
+  } else {
+    stop("obj must be an ss_ranef object.")
+  }
+
+  post_samps <- obj$posterior_samples[, cnames]
+
+  lwr <- (1 - ci)/2
+  upr <- 1 - lwr
+  post_lwr <- apply(post_samps, 2, function(x) quantile(x, lwr))
+  post_means <- colMeans(post_samps)
+  post_upr <- apply(post_samps, 2, function(x) quantile(x, upr))
+
+  bounds_chr <- as.character(c(lwr, upr))
+  # splits e.g., "0.05" and returns "05"
+  bounds_digits <- sapply(bounds_chr, function(x) strsplit(x, split = "[.]")[[1]][2])
+  bounds_labs <- paste0("q", bounds_digits)
+
+  summ_df <- data.frame(post_means, post_lwr, post_upr)
+  colnames(summ_df) <- c("Post.mean", bounds_labs)
+
+  if (as_df) return(summ_df)
+
+  attr(summ_df, "call") <- obj$call
+  class(summ_df) <- c("posterior_summary", "data.frame")
+
+  return(summ_df)
+}
+
+#' print.posterior_summary
+#'
+#' @export
+print.posterior_summary <- function(x, ...) {
+  cat("Linear mixed model fit with SSranef\n")
+  cat("Call: ")
+  print(attr(x, "call"))
+  cat("\n")
+  print(as.data.frame(x), right = FALSE)
+}
+
+
+#' ranef_summary
+#'
+#' @export
+ranef_summary <- function(obj, ci = 0.9, as_df = FALSE) {
+  all_cnames <- colnames(obj$posterior_samples)
+  post_samps <- obj$posterior_samples
+
+  type <- obj$call[1]
+  if (grepl("beta", type)) {
+    theta_names <- c(grep("theta1", all_cnames, value = TRUE),
+                    grep("theta2", all_cnames, value = TRUE))
+  } else if (grepl("alpha", type)) {
+    theta_names <- c(grep("theta", all_cnames, value = TRUE))
+  } else {
+    stop("obj must be an ss_ranef object.")
+  }
+  gamma_names <- grep("gamma", all_cnames, value = TRUE)
+
+  thetas <- post_samps[, theta_names]
+  gammas <- post_samps[, gamma_names]
+
+  lwr <- (1 - ci)/2
+  upr <- 1 - lwr
+
+  post_lwr <- apply(thetas, 2, function(x) quantile(x, lwr))
+  post_means <- colMeans(thetas)
+  post_upr <- apply(thetas, 2, function(x) quantile(x, upr))
+  pips <- if (grepl("beta", type)) c(rep(NA, ncol(thetas)/2), colMeans(gammas)) else colMeans(gammas)
+
+
+  bounds_chr <- as.character(c(lwr, upr))
+  # splits e.g., "0.05" and returns "05"
+  bounds_digits <- sapply(bounds_chr, function(x) strsplit(x, split = "[.]")[[1]][2])
+  bounds_labs <- paste0("q", bounds_digits)
+
+  summ_df <- data.frame(post_means, post_lwr, post_upr, pips)
+  colnames(summ_df) <- c("Post.mean", bounds_labs, "PIP")
+
+  if (as_df) return(summ_df)
+
+  attr(summ_df, "call") <- obj$call
+  class(summ_df) <- c("ranef_summary", "data.frame")
+
+  return(summ_df)
+
+}
+
+#' print.ranef_summary
+#'
+#' @export
+print.ranef_summary <- function(x, ...) {
+  cat("Linear mixed model fit with SSranef\n")
+  cat("Call: ")
+  print(attr(x, "call"))
+  cat("\n")
+  print(as.data.frame(x), right = FALSE)
+}

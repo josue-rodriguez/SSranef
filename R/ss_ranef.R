@@ -3,8 +3,9 @@
 #'
 #'
 #'
-#' @importFrom rjags jags.model coda.samples update
-# library(dplyr)
+#' @importFrom rjags jags.model coda.samples
+#' @importFrom stats update
+#' @export
 
 
 ss_ranef_alpha <- function(y, unit, burnin = 1000, iter = 1000, chains = 4, priors = NULL,
@@ -55,6 +56,8 @@ ss_ranef_alpha <- function(y, unit, burnin = 1000, iter = 1000, chains = 4, prio
     data_list = data_list,
     call = args
   )
+
+  class(ret) <- c("ss_ranef", "list")
   return(ret)
 }
 
@@ -70,11 +73,13 @@ ss_ranef_alpha <- function(y, unit, burnin = 1000, iter = 1000, chains = 4, prio
 #'
 #'
 #'
-#' @importFrom rjags jags.model coda.samples update
+#' @importFrom rjags jags.model coda.samples
+#' @importFrom stats update
+#' @export
 
 
 ss_ranef_beta <- function(y, X, unit, burnin = 1000, iter = 1000, chains = 4, priors = NULL,
-                          vars2monitor = c("alpha", "beta", "gamma", "sigma", "tau1", "tau2", "theta1", "theta2")) {
+                          vars2monitor = c("alpha", "beta", "gamma", "sigma", "tau1", "tau2", "rho", "theta1", "theta2")) {
   args <- match.call()
 
   if (is.null(priors)) {
@@ -116,12 +121,12 @@ ss_ranef_beta <- function(y, X, unit, burnin = 1000, iter = 1000, chains = 4, pr
 
 
   colnames(post_samps) <- cnames
-
   ret <- list(
     posterior_samples = post_samps,
     data_list = data_list,
     call = args
   )
+  class(ret) <- c("ss_ranef", "list")
   return(ret)
 }
 

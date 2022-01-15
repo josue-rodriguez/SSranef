@@ -1,10 +1,10 @@
 # --- helpers for alpha model ---
-priors_list <- make_default_priors_alpha()
+# priors_list <- make_default_priors_alpha()
 
 make_default_priors_alpha <- function() {
   priors_list <- list(
     gamma = "gamma[j] ~ dbern(0.5)",
-    alpha = "alpha ~ dnorm(0, 1)",
+    alpha = "alpha ~ dnorm(0, 0.01)",
     tau = "tau ~ dt(0, 1, 3)T(0, )",
     sigma = "sigma ~ dt(0, 1, 3)T(0, )"
   )
@@ -61,8 +61,8 @@ make_model_text_alpha <- function(priors_list) {
 make_default_priors_beta <- function() {
   priors_list <- list(
     gamma = "gamma[j] ~ dbern(0.5)",
-    alpha = "alpha ~ dnorm(0, 1)",
-    beta = "beta ~ dnorm(0, 1)",
+    alpha = "alpha ~ dnorm(0, 0.01)",
+    beta = "beta ~ dnorm(0, 0.01)",
     tau1 = "tau1 ~ dt(0, 1, 3)T(0, )",
     tau2 = "tau2 ~ dt(0, 1, 3)T(0, )",
     sigma = "sigma ~ dt(0, 1, 3)T(0, )",
