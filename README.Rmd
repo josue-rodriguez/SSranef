@@ -44,14 +44,14 @@ d <- lme4::sleepstudy
 ```{r}
 d$y <- c(scale(d$Reaction))
 alpha <- ss_ranef_alpha(y = d$y, unit = d$Subject)
-posterior_summary(alpha)
-ranef_summary(alpha)
+posterior_summary(alpha, ci = 0.90, digits = 2)
+ranef_summary(alpha, ci = 0.95, digits = 2)
 ```
 
 ```{r}
 beta <- ss_ranef_beta(y = d$y, X = d$Days, unit = d$Subject)
-posterior_summary(beta)
-ranef_summary(beta)
+posterior_summary(beta, digits = 2)
+ranef_summary(beta, digits = 2)
 ```
 
 ```{r include=FALSE, eval=FALSE}

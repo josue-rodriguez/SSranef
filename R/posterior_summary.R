@@ -2,7 +2,7 @@
 #'
 #' @export
 
-posterior_summary <- function(obj, ci = 0.9, as_df = FALSE) {
+posterior_summary <- function(obj, ci = 0.9, as_df = FALSE, digits = 2) {
 
   type <- obj$call[1]
   if (grepl("beta", type)) {
@@ -27,6 +27,7 @@ posterior_summary <- function(obj, ci = 0.9, as_df = FALSE) {
   bounds_labs <- paste0("q", bounds_digits)
 
   summ_df <- data.frame(post_means, post_lwr, post_upr)
+  summ_df <- round(summ_df, digits)
   colnames(summ_df) <- c("Post.mean", bounds_labs)
 
   if (as_df) return(summ_df)
@@ -52,7 +53,7 @@ print.posterior_summary <- function(x, ...) {
 #' ranef_summary
 #'
 #' @export
-ranef_summary <- function(obj, ci = 0.9, as_df = FALSE) {
+ranef_summary <- function(obj, ci = 0.9, as_df = FALSE, digits = 2) {
   all_cnames <- colnames(obj$posterior_samples)
   post_samps <- obj$posterior_samples
 
@@ -77,6 +78,8 @@ ranef_summary <- function(obj, ci = 0.9, as_df = FALSE) {
   post_means <- colMeans(thetas)
   post_upr <- apply(thetas, 2, function(x) quantile(x, upr))
   pips <- if (grepl("beta", type)) c(rep(NA, ncol(thetas)/2), colMeans(gammas)) else colMeans(gammas)
+  BF_10 <- pips / (1 - pips)
+  BF_01 <- 1/BF_10
 
 
   bounds_chr <- as.character(c(lwr, upr))
@@ -84,8 +87,9 @@ ranef_summary <- function(obj, ci = 0.9, as_df = FALSE) {
   bounds_digits <- sapply(bounds_chr, function(x) strsplit(x, split = "[.]")[[1]][2])
   bounds_labs <- paste0("q", bounds_digits)
 
-  summ_df <- data.frame(post_means, post_lwr, post_upr, pips)
-  colnames(summ_df) <- c("Post.mean", bounds_labs, "PIP")
+  summ_df <- data.frame(post_means, post_lwr, post_upr, pips, BF_10, BF_01)
+  summ_df <- round(summ_df, digits)
+  colnames(summ_df) <- c("Post.mean", bounds_labs, "PIP", "BF_10", "BF_01")
 
   if (as_df) return(summ_df)
 
@@ -104,5 +108,5 @@ print.ranef_summary <- function(x, ...) {
   cat("Call: ")
   print(attr(x, "call"))
   cat("\n")
-  print(as.data.frame(x), right = FALSE)
+  print(as.data.frame(x), right = FALSE, ...)
 }
