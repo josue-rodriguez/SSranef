@@ -1,6 +1,12 @@
 #' ss_ranef_alpha
 #'
-#'
+#' @param y ...
+#' @param unit ...
+#' @param burnin ...
+#' @param iter ...
+#' @param chains ...
+#' @param priors ...
+#' @param vars2monitor ...
 #'
 #'
 #' @importFrom rjags jags.model coda.samples
@@ -36,7 +42,8 @@ ss_ranef_alpha <- function(y, unit, burnin = 1000, iter = 1000, chains = 4, prio
                             variable.names = vars2monitor,
                             n.iter = iter)
 
-  post_samps <- do.call(rbind, mcmc_list)
+  post_samps <- do.call(rbind.data.frame, mcmc_list)
+  post_samps$chain <- rep(1:chains, each = iter)
 
   # clean up column names
   cnames <- colnames(post_samps)
@@ -54,6 +61,7 @@ ss_ranef_alpha <- function(y, unit, burnin = 1000, iter = 1000, chains = 4, prio
   ret <- list(
     posterior_samples = post_samps,
     data_list = data_list,
+    model_text = model_text,
     call = args
   )
 
@@ -63,15 +71,17 @@ ss_ranef_alpha <- function(y, unit, burnin = 1000, iter = 1000, chains = 4, prio
 
 
 
-# x <- mlmRev::bdf %>% group_by(schoolNR) %>% slice_sample(n = 3)
-# tst <- ss_ranef_int(y = x$IQ.verb, X = NULL, unit = x$schoolNR)
-#
-# colMeans(tst$posterior_samples)
 
 #' ss_ranef_beta
 #'
-#'
-#'
+#' @param y ...
+#' @param X ...
+#' @param unit ...
+#' @param burnin ...
+#' @param iter ...
+#' @param chains ...
+#' @param priors ...
+#' @param vars2monitor ...
 #'
 #' @importFrom rjags jags.model coda.samples
 #' @importFrom stats update
@@ -107,7 +117,8 @@ ss_ranef_beta <- function(y, X, unit, burnin = 1000, iter = 1000, chains = 4, pr
                             variable.names = vars2monitor,
                             n.iter = iter)
 
-  post_samps <- do.call(rbind, mcmc_list)
+  post_samps <- do.call(rbind.data.frame, mcmc_list)
+  post_samps$chain <- rep(1:chains, each = iter)
 
   # clean up column names
   cnames <- colnames(post_samps)
@@ -124,6 +135,7 @@ ss_ranef_beta <- function(y, X, unit, burnin = 1000, iter = 1000, chains = 4, pr
   ret <- list(
     posterior_samples = post_samps,
     data_list = data_list,
+    model_text = model_text,
     call = args
   )
   class(ret) <- c("ss_ranef", "list")

@@ -14,6 +14,21 @@ ss_ranef_alpha(
   vars2monitor = c("alpha", "gamma", "lambda", "sigma", "tau", "theta")
 )
 }
+\arguments{
+\item{y}{...}
+
+\item{unit}{...}
+
+\item{burnin}{...}
+
+\item{iter}{...}
+
+\item{chains}{...}
+
+\item{priors}{...}
+
+\item{vars2monitor}{...}
+}
 \description{
 ss_ranef_alpha
 }

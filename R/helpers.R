@@ -1,5 +1,4 @@
 # --- helpers for alpha model ---
-# priors_list <- make_default_priors_alpha()
 
 make_default_priors_alpha <- function() {
   priors_list <- list(
@@ -11,6 +10,7 @@ make_default_priors_alpha <- function() {
   return(priors_list)
 }
 
+
 make_custom_priors_alpha <- function(custom_priors) {
   custom_priors_names <- names(custom_priors)
   priors_list <- make_default_priors_alpha()
@@ -20,6 +20,7 @@ make_custom_priors_alpha <- function(custom_priors) {
   return(custom_priors)
 }
 
+
 alpha_model_text1 <-
   "model{
   for (i in 1:N) {
@@ -27,6 +28,7 @@ alpha_model_text1 <-
     y[i] ~ dnorm(alpha_j[unit[i]], precision)
   }
   for (j in 1:J) {"
+
 
 alpha_model_text2 <-
    "
@@ -72,8 +74,6 @@ make_default_priors_beta <- function() {
 }
 
 
-
-
 beta_model_text1 <-
   "model {
     for (i in 1:N) {
@@ -83,6 +83,7 @@ beta_model_text1 <-
     }
     for (j in 1:J) {
       # prior for inclusion variable"
+
 
 beta_model_text2 <-
   "
@@ -99,6 +100,7 @@ beta_model_text2 <-
       B[j, 2] <- beta + theta2[j]
     }
   # priors"
+
 
 make_model_text_beta <- function(priors_list) {
   model_text <- paste0(
@@ -117,5 +119,3 @@ make_model_text_beta <- function(priors_list) {
   )
   return(model_text)
 }
-
-

@@ -18,20 +18,21 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of SSranef is to ...
+SSranef is an R package for random effects selection that corresponds to the models described in Rodriguez, Williams, and Rast (2021). Specifically, `ss_ranef_alpha()` fits a random intercepts model with a spike-and-slab prior on the random effects, and `ss_ranef_beta()` fits a model with both random intercepts and random slopes, with a spike-and-slab prior on the random effects for the slope. 
 
 ## Installation
 
 
-And the development version from [GitHub](https://github.com/) with:
+This package can be installed with 
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("josue-rodriguez/SSranef")
 ```
+
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+Because `SSranef` uses JAGS as a backend, we must also load the `rjags` package.
 
 ```{r example}
 library(SSranef)
@@ -40,18 +41,43 @@ library(rjags)
 d <- lme4::sleepstudy
 ```
 
-
+## Alpha model
 ```{r}
 d$y <- c(scale(d$Reaction))
+
 alpha <- ss_ranef_alpha(y = d$y, unit = d$Subject)
+
 posterior_summary(alpha, ci = 0.90, digits = 2)
+```
+
+```{r}
 ranef_summary(alpha, ci = 0.95, digits = 2)
 ```
 
 ```{r}
+caterpillar_plot(alpha)
+```
+
+```{r}
+pip_plot(alpha)
+```
+
+## Beta model
+```{r}
 beta <- ss_ranef_beta(y = d$y, X = d$Days, unit = d$Subject)
 posterior_summary(beta, digits = 2)
+```
+
+```{r}
 ranef_summary(beta, digits = 2)
+```
+
+```{r}
+caterpillar_plot(beta)
+```
+
+```{r}
+pip_plot(beta)
 ```
 
 ```{r include=FALSE, eval=FALSE}
