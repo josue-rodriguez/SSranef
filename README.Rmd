@@ -92,7 +92,9 @@ Priors can be passed on to either of the `ss_ranef` functions through a named li
 
 ```{r}
 # change prior for mean intercept
-priors <- list(alpha = "alpha ~ dt(0, 1, 3)")
+priors <- list(alpha = "alpha ~ dt(0, 1, 3)",
+               # for each jth unit, change prior probability of inclusion
+               gamma = "gamma[j] ~ dbern(0.75)") 
 
 fit <- ss_ranef_alpha(y = d$y, unit = d$Subject, priors = priors)
 ranef_summary(fit)

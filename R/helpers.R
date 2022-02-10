@@ -128,3 +128,6 @@ make_model_text_beta <- function(priors_list) {
   )
   return(model_text)
 }
+
+
+# --- helpers for multivariate model ---
