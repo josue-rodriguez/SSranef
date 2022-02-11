@@ -1,35 +1,35 @@
 library(rjags)
 library(dplyr)
 
-set.seed(42)
-N <- 100
-x <- runif(N, -1, 1)
-
-r <- 0.4
-Omega <- rbind( # correlation matrix
-  c(1, r),
-  c(r, 1)
-)
-sigma <- c(2, 4) # residual SDs
-Sigma <- diag(sigma) %*% Omega %*% diag(sigma) # covariance matrix
-Sigma
-
-errors <- mvtnorm::rmvnorm(N, c(0,0), Sigma)
-
-cor(errors) # realized correlation
-
-y1 <- -0.5 + x * 1.1 + errors[,1]
-y2 <- 0.8 + x * 0.4 + errors[,2]
-
-par(mfrow = c(1, 2))
-plot(y1, y2, main = "Y's")
-points(errors, col = "red", main = "Residuals")
-par(mfrow = c(1, 1))
-fit <- lm(cbind(y1, y2) ~ x)
-summary(fit)
-
-
-cor(resid(fit))
+# set.seed(42)
+# N <- 100
+# x <- runif(N, -1, 1)
+#
+# r <- 0.4
+# Omega <- rbind( # correlation matrix
+#   c(1, r),
+#   c(r, 1)
+# )
+# sigma <- c(2, 4) # residual SDs
+# Sigma <- diag(sigma) %*% Omega %*% diag(sigma) # covariance matrix
+# Sigma
+#
+# errors <- mvtnorm::rmvnorm(N, c(0,0), Sigma)
+#
+# cor(errors) # realized correlation
+#
+# y1 <- -0.5 + x * 1.1 + errors[,1]
+# y2 <- 0.8 + x * 0.4 + errors[,2]
+#
+# par(mfrow = c(1, 2))
+# plot(y1, y2, main = "Y's")
+# points(errors, col = "red", main = "Residuals")
+# par(mfrow = c(1, 1))
+# fit <- lm(cbind(y1, y2) ~ x)
+# summary(fit)
+#
+#
+# cor(resid(fit))
 # beta[1,1] is the first intercept
 # beta[1,2] is the first slope
 # beta[2,1] is the second intercept
@@ -39,53 +39,53 @@ cor(resid(fit))
 
 
 
-model_code <- "
-model{
-  for (i in 1:N) {
-    Y[i, 1:2] ~ dmnorm(M[i, 1:2], P[1:2, 1:2])
-
-    M[i, 1] <- B[1, 1] + B[2, 1] * x[i]
-    M[i, 2] <- B[1, 2] + B[2, 2] * x[i]
-  }
-
-  B[1, 1] ~ dnorm(0, 0.1)
-  B[1, 2] ~ dnorm(0, 0.1)
-  B[2, 1] ~ dnorm(0, 0.1)
-  B[2, 2] ~ dnorm(0, 0.1)
-
-  P <- inverse(Sigma)
-  sigma <- sqrt(Sigma)
-  Sigma <- Tau %*% R %*% Tau
-
-  rho ~ dunif(-1, 1)
-  R[1, 1] <- 1
-  R[2, 2] <- 1
-  R[1, 2] <- rho
-  R[2, 1] <- rho
-
-  Tau[1, 2] <- 0
-  Tau[2, 1] <- 0
-  Tau[1, 1] ~ dt(0, 1, 3)T(0, )
-  Tau[2, 2] ~ dt(0, 1, 3)T(0, )
-}
-"
-
-data_list <- list(
-  Y = cbind(y1, y2),
-  x = x,
-  N = length(y1)
-)
-
-
-mod <- jags.model(file = textConnection(model_code),
-                  data = data_list)
-post_samps <- coda.samples(mod,
-                           variable.names = c("B", "sigma", "rho"),
-                           n.iter = 4000)
-df <- do.call(rbind, post_samps)
-
-colMeans(df)
-summary(fit)
+# model_code <- "
+# model{
+#   for (i in 1:N) {
+#     Y[i, 1:2] ~ dmnorm(M[i, 1:2], P[1:2, 1:2])
+#
+#     M[i, 1] <- B[1, 1] + B[2, 1] * x[i]
+#     M[i, 2] <- B[1, 2] + B[2, 2] * x[i]
+#   }
+#
+#   B[1, 1] ~ dnorm(0, 0.1)
+#   B[1, 2] ~ dnorm(0, 0.1)
+#   B[2, 1] ~ dnorm(0, 0.1)
+#   B[2, 2] ~ dnorm(0, 0.1)
+#
+#   P <- inverse(Sigma)
+#   sigma <- sqrt(Sigma)
+#   Sigma <- Tau %*% R %*% Tau
+#
+#   rho ~ dunif(-1, 1)
+#   R[1, 1] <- 1
+#   R[2, 2] <- 1
+#   R[1, 2] <- rho
+#   R[2, 1] <- rho
+#
+#   Tau[1, 2] <- 0
+#   Tau[2, 1] <- 0
+#   Tau[1, 1] ~ dt(0, 1, 3)T(0, )
+#   Tau[2, 2] ~ dt(0, 1, 3)T(0, )
+# }
+# "
+#
+# data_list <- list(
+#   Y = cbind(y1, y2),
+#   x = x,
+#   N = length(y1)
+# )
+#
+#
+# mod <- jags.model(file = textConnection(model_code),
+#                   data = data_list)
+# post_samps <- coda.samples(mod,
+#                            variable.names = c("B", "sigma", "rho"),
+#                            n.iter = 4000)
+# df <- do.call(rbind, post_samps)
+#
+# colMeans(df)
+# summary(fit)
 
 
 #===========================
@@ -94,8 +94,9 @@ summary(fit)
 #===========================
 #===========================
 library(lme4)
-library(brms)
-library(cmdstanr)
+library(Matrix)
+# library(brms)
+# library(cmdstanr)
 
 # ---- GENERATE DATA ----
 n <- 100
@@ -158,15 +159,15 @@ df <- data.frame(y1 = y[, 1], y2 = y[, 2], x = X[, 2], id = g)
 # mvbind for multivariate component
 # set_rescore for estimating cor of residuals
 
-mv_fit <- brm(
-  bf(mvbind(y1, y2) ~ x + (x|c|id)) + set_rescor(TRUE),
-  data = df,
-  iter = 4000,
-  cores = 2,
-  chains = 2,
-  backend = "cmdstanr",
-  file = "mv_fit.rds"
-)
+# mv_fit <- brm(
+#   bf(mvbind(y1, y2) ~ x + (x|c|id)) + set_rescor(TRUE),
+#   data = df,
+#   iter = 4000,
+#   cores = 2,
+#   chains = 2,
+#   backend = "cmdstanr",
+#   file = "data-raw/mv_fit.rds"
+# )
 
 # update(mv_fit, newdata = df,
 #        cores = 2,
@@ -177,6 +178,6 @@ mv_fit <- brm(
 
 
 
-summary(mv_fit)
-
-vcov(mv_fit, correlation = TRUE)
+# summary(mv_fit)
+#
+# vcov(mv_fit, correlation = TRUE)

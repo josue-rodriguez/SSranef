@@ -5,16 +5,6 @@
 #' @import ggplot2 patchwork
 #' @export
 
-# d <- lme4::sleepstudy
-#
-#
-# d$y <- c(scale(d$Reaction))
-#
-# alpha <- ss_ranef_beta(y = d$y, X = d$Days, unit = d$Subject)
-#
-# obj <- alpha
-#
-
 
 caterpillar_plot <- function(obj, ci = 0.9, col_id = TRUE, ...) {
   ranef_summ <- ranef_summary(obj, ci = ci, as_df = TRUE)
