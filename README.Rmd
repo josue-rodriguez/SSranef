@@ -85,6 +85,24 @@ library(lme4)
 summary(lmer(y ~ 1 + (1|Subject), data = d))
 ```
 
+## Multivariate model
+
+Note, this currently only returns an MCMC list for the posterior samples
+
+```{r}
+mv_data <- gen_mv_data(10, 10)
+str(mv_data)
+
+mv_model <- ss_ranef_mv(Y = cbind(mv_data$y1, mv_data$y2),
+                 X = mv_data$x,
+                 unit = mv_data$id,
+                 burnin = 100,
+                 iter = 500,
+                 chains = 4)
+
+summary(mv_model$posterior_samples)
+```
+
 
 ## Priors
 
@@ -108,4 +126,3 @@ The code for each model can also be extracted to make more extensive modificatio
 jags_model_text <- fit$model_text
 cat(jags_model_text)
 ```
-

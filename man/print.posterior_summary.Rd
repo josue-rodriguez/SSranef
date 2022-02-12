@@ -4,7 +4,7 @@
 \alias{print.posterior_summary}
 \title{print.posterior_summary}
 \usage{
-\method{print}{posterior_summary}(x, ...)
+print.posterior_summary(x, ...)
 }
 \description{
 print.posterior_summary

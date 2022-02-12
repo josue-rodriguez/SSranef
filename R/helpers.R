@@ -131,3 +131,119 @@ make_model_text_beta <- function(priors_list) {
 
 
 # --- helpers for multivariate model ---
+
+make_default_priors_mv <- function() {
+  priors_list <- list(
+    # fixed effects
+    B1_1 = "B[1, 1] ~ dnorm(0, 0.1)",
+    B1_2 = "B[1, 2] ~ dnorm(0, 0.1)",
+    B2_1 = "B[2, 1] ~ dnorm(0, 0.1)",
+    B2_2 = "B[2, 2] ~ dnorm(0, 0.1)",
+    # random effects
+    theta = "theta[j, 1:4] ~ dmnorm(c(0, 0, 0, 0), Omega[1:4, 1:4])",
+    Omega = "Omega[1:4,1:4] ~ dwish(O[1:4,1:4], 5)",
+    gamma1 = "gamma1[j] ~ dbern(0.5)",
+    gamma2 = "gamma2[j] ~ dbern(0.5)",
+    # residual standard deviations
+    s1 = "s[1, 1] ~ dt(0, 1, 3)T(0, )",
+    s2 = "s[2, 2] ~ dt(0, 1, 3)T(0, )",
+    rw = "rw ~ dunif(-1, 1)"
+  )
+  return(priors_list)
+}
+
+
+make_custom_priors_mv <- function(custom_priors) {
+  custom_priors_names <- names(custom_priors)
+  priors_list <- make_default_priors_mv()
+
+  priors_list[custom_priors_names] <- custom_priors
+
+  return(priors_list)
+}
+
+
+mv_model_text1 <- "
+model{
+  for (i in 1:N) {
+    Y[i, 1:2] ~ dmnorm(M[i, 1:2], Pw[1:2, 1:2])
+    M[i, 1] <- inprod(X[i, 1:2], Bj[unit[i], 1, 1:2])
+    M[i, 2] <- inprod(X[i, 1:2], Bj[unit[i], 2, 1:2])
+  }
+  for (j in 1:J) {
+"
+
+mv_model_text2 <-
+  " Bj[j, 1, 1:2] <- B[1, 1:2] + theta[j, 1:2] * c(0, gamma1[j])
+    Bj[j, 2, 1:2] <- B[2, 1:2] + theta[j, 3:4] * c(0, gamma2[j])
+  }"
+
+
+mv_model_text3 <- "
+  # ==== Covariance matrix for residuals ====
+
+  # Precision matrix for within-unit errors
+  Pw <- inverse(Sigma)
+
+  # standard deviations for residuals
+  sigma[1:2] <- c(sqrt(Sigma[1, 1]),
+                  sqrt(Sigma[2, 2]))
+
+  # Covariance matrix for residuals
+  Sigma <- s %*% Rw %*% s
+
+  # within-unit correlation
+  Rw[1, 1] <- 1
+  Rw[2, 2] <- 1
+  Rw[1, 2] <- rw
+  Rw[2, 1] <- rw
+
+  s[1, 2] <- 0
+  s[2, 1] <- 0
+
+  # priors for residual SDs
+"
+
+
+mv_model_text4 <-
+  "
+  # ==== Covariance matrix for random effects ====
+  "
+
+
+mv_model_text5 <- "
+  Tau <- inverse(Omega)
+
+  for (k in 1:K){
+    for (k.prime in 1:K){
+      rb[k,k.prime] <- Tau[k,k.prime]/
+        sqrt(Tau[k,k]*Tau[k.prime,k.prime])
+    }
+  }
+}
+"
+
+make_model_text_mv <- function(priors_list) {
+  model_text <-
+    paste0(
+    mv_model_text1, "    ",
+    priors_list$theta, "",
+    priors_list$gamma1, "\n    ",
+    priors_list$gamma2, "\n   ",
+    mv_model_text2, "\n  ",
+    priors_list$B1_1, "\n  ",
+    priors_list$B1_2, "\n  ",
+    priors_list$B2_1, "\n  ",
+    priors_list$B2_2, "\n  ",
+    mv_model_text3, "  ",
+    priors_list$s1, "\n  ",
+    priors_list$s2, "\n  ",
+    priors_list$rw, "\n  ",
+    mv_model_text4,
+    priors_list$Omega, "\n  ",
+
+    mv_model_text5
+  )
+  return(model_text)
+}
+

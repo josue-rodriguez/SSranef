@@ -3,8 +3,8 @@
 # library(dplyr)
 #
 # # ---- GENERATE DATA ----
-# n <- 100
-# n_j <- 50
+# n <- 20
+# n_j <- 5
 # N <- n * n_j
 #
 # # design matrix + betas
@@ -69,20 +69,17 @@
 #     M[i, 2] <- inprod(X[i, 1:2], Bj[id[i], 2, 1:2])
 #   }
 #   for (j in 1:J) {
-#     u[j, 1:4] ~ dmnorm(c(0, 0, 0, 0), Omega[1:4, 1:4])
+#     u[j, 1:4] ~ dmnorm.vcov(c(0, 0, 0, 0), Tau[1:4, 1:4])
 #
-#     gamma1[j] ~ dbern(0.5)
-#     gamma2[j] ~ dbern(0.5)
-#
-#     Bj[j, 1, 1:2] <- B[1, 1:2] + u[j, 1:2] * c(0, gamma1[j])
-#     Bj[j, 2, 1:2] <- B[2, 1:2] + u[j, 3:4] * c(0, gamma2[j])
+#     Bj[j, 1, 1:2] <- B[1, 1:2] + u[j, 1:2]
+#     Bj[j, 2, 1:2] <- B[2, 1:2] + u[j, 3:4]
 #   }
 #
 #   # ==== Fixed effects ====
-#   B[1, 1] ~ dnorm(0, 1)
-#   B[1, 2] ~ dnorm(0, 1)
-#   B[2, 1] ~ dnorm(0, 1)
-#   B[2, 2] ~ dnorm(0, 1)
+#   B[1, 1] ~ dnorm(0, 0.1)
+#   B[1, 2] ~ dnorm(0, 0.1)
+#   B[2, 1] ~ dnorm(0, 0.1)
+#   B[2, 2] ~ dnorm(0, 0.1)
 #
 #   # ==== Covariance matrix for residuals ====
 #
@@ -101,26 +98,75 @@
 #   Rw[2, 2] <- 1
 #   Rw[1, 2] <- rw
 #   Rw[2, 1] <- rw
+#   rw ~ dunif(-1, 1)
 #
 #   s[1, 2] <- 0
 #   s[2, 1] <- 0
-#
 #   # priors for SDs
 #   s[1, 1] ~ dt(0, 1, 3)T(0, )
 #   s[2, 2] ~ dt(0, 1, 3)T(0, )
-#   rw ~ dunif(-1, 1)
 #
 #   # ==== Covariance matrix for random effects ====
-#   Omega[1:4,1:4] ~ dwish(O[1:4,1:4], 5)
+#   # Precision matrix for between-units errors
+#   # Pb <- inverse(Tau)
 #
-#   Tau <- inverse(Omega)
+#   # standard deviations for random effects
+#   tau[1:4] <- c(sqrt(t[1, 1]),
+#                 sqrt(t[2, 2]),
+#                 sqrt(t[3, 3]),
+#                 sqrt(t[4, 4]))
 #
-#   for (k in 1:K){
-#     for (k.prime in 1:K){
-#       rho[k,k.prime] <- Tau[k,k.prime]/
-#         sqrt(Tau[k,k]*Tau[k.prime,k.prime])
-#     }
-#   }
+#   # Covariance matrix for random effects
+#   Tau <- t %*% Rb %*% t
+#
+#   # between-unit correlations
+#   Rb[1, 1] <- 1
+#   Rb[2, 2] <- 1
+#   Rb[3, 3] <- 1
+#   Rb[4, 4] <- 1
+#
+#   Rb[1, 2] <- rb12
+#   Rb[1, 3] <- rb13
+#   Rb[1, 4] <- rb14
+#   Rb[2, 1] <- rb12
+#   Rb[3, 1] <- rb13
+#   Rb[4, 1] <- rb14
+#
+#   Rb[2, 3] <- rb23
+#   Rb[2, 4] <- rb24
+#   Rb[3, 2] <- rb23
+#   Rb[4, 2] <- rb24
+#
+#   Rb[3, 4] <- rb34
+#   Rb[4, 3] <- rb34
+#
+#   rb12 ~ dunif(-1, 1)
+#   rb13 ~ dunif(-1, 1)
+#   rb14 ~ dunif(-1, 1)
+#   rb23 ~ dunif(-1, 1)
+#   rb24 ~ dunif(-1, 1)
+#   rb34 ~ dunif(-1, 1)
+#
+#   # priors for SDs
+#   t[1, 1] ~ dt(0, 1, 3)T(0, )
+#   t[2, 2] ~ dt(0, 1, 3)T(0, )
+#   t[3, 3] ~ dt(0, 1, 3)T(0, )
+#   t[4, 4] ~ dt(0, 1, 3)T(0, )
+#
+#   t[1, 2] <- 0
+#   t[1, 3] <- 0
+#   t[1, 4] <- 0
+#   t[2, 1] <- 0
+#   t[3, 1] <- 0
+#   t[4, 1] <- 0
+#
+#   t[2, 3] <- 0
+#   t[2, 4] <- 0
+#   t[3, 2] <- 0
+#   t[4, 2] <- 0
+#
+#   t[3, 4] <- 0
+#   t[4, 3] <- 0
 # }
 # "
 # data_list <- list(
@@ -128,9 +174,7 @@
 #   X = cbind(1, df$x),
 #   N = nrow(df),
 #   J = length(unique(df$id)),
-#   id = df$id,
-#   O = diag(4),
-#   K = 4
+#   id = df$id
 # )
 #
 #
@@ -138,7 +182,8 @@
 #                   data = data_list,
 #                   n.chains = 4)
 # vars2monitor <- c("B", "u",
-#                   "sigma", "Tau", "rho")
+#                   "sigma", "tau",
+#                   "rw", "rb12", "rb13", "rb14", "rb23", "rb24", "rb34")
 # post_samps <- coda.samples(mod,
 #                            variable.names = vars2monitor,
 #                            n.iter = 4000)
@@ -150,29 +195,3 @@
 #   select(-matches("^u")) %>%
 #   colMeans()
 #
-#
-#
-# jcov2cor <- function(x) {
-#   x %>%
-#     select(matches("Tau\\[")) %>%
-#     colMeans() -> x
-#   m <- diag(4)
-#   diag(m) <- c(x["Tau[1,1]"], x["Tau[2,2]"], x["Tau[3,3]"],x["Tau[4,4]"])
-#   m[lower.tri(m)] <- c(
-#     x["Tau[1,2]"],
-#     x["Tau[1,3]"],
-#     x["Tau[1,4]"],
-#     x["Tau[2,3]"],
-#     x["Tau[2,4]"],
-#     x["Tau[3,4]"]
-#   )
-#
-#   m[upper.tri(m)] <- t(m)[upper.tri(m)]
-#
-#   return(m)
-# }
-#
-# diag(sqrt(jcov2cor(post_df)))
-# post_df %>%
-#   select(matches("rho\\[")) %>%
-#   colMeans()

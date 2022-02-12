@@ -4,7 +4,7 @@
 \alias{print.ranef_summary}
 \title{print.ranef_summary}
 \usage{
-\method{print}{ranef_summary}(x, ...)
+print.ranef_summary(x, ...)
 }
 \description{
 print.ranef_summary

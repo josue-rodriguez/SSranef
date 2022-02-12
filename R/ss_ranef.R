@@ -144,17 +144,75 @@ ss_ranef_beta <- function(y, X, unit, burnin = 1000, iter = 1000, chains = 4, pr
 
 
 
-#' ss_ranef_multi
+#' ss_ranef_mv
 #'
 #' @param y ...
+#' @param X ...
 #' @param unit ...
 #' @param burnin ...
 #' @param iter ...
 #' @param chains ...
 #' @param priors ...
 #' @param vars2monitor ...
-#' https://gist.github.com/seananderson/32906dda9af81482221166449087b357
 #'
 #' @importFrom rjags jags.model coda.samples
 #' @importFrom stats update
 #' @export
+
+
+ss_ranef_mv <- function(Y, X, unit, burnin = 1000, iter = 1000, chains = 4, priors = NULL,
+                          vars2monitor =c("B", "theta", "gamma1", "gamma2", "sigma", "Tau", "rb", "rw")) {
+  args <- match.call()
+
+  if (is.null(priors)) {
+    priors_list <- make_default_priors_mv()
+  } else {
+    priors_list <- make_custom_priors_mv(priors)
+  }
+
+  model_text <- make_model_text_mv(priors_list = priors_list)
+  og_units <- unique(unit)
+  X <- cbind(1, X)
+  K <- 4
+  data_list <- list(Y = Y,
+                    X = X,
+                    N = nrow(Y),
+                    unit = as.numeric(as.factor(unit)),
+                    J = length(unique(unit)),
+                    O = diag(K),
+                    K = K)
+
+  jags_fit <- jags.model(textConnection(model_text),
+                         data = data_list,
+                         n.chains = chains)
+
+  if (!is.null(burnin)) update(jags_fit, burnin)
+
+  mcmc_list <- coda.samples(jags_fit,
+                            variable.names = vars2monitor,
+                            n.iter = iter)
+
+  # post_samps <- do.call(rbind.data.frame, mcmc_list)
+  # post_samps$chain <- rep(1:chains, each = iter)
+
+  # clean up column names
+  # cnames <- colnames(post_samps)
+  # gamma_mask <- grepl("gamma\\[[0-9]+\\]", cnames)
+  # theta1_mask <- grepl("theta1\\[[0-9]+\\]", cnames)
+  # theta2_mask <- grepl("theta2\\[[0-9]+\\]", cnames)
+  #
+  # cnames[gamma_mask] <- paste("gamma", og_units, sep = "_")
+  # cnames[theta1_mask] <- paste("theta1", og_units, sep = "_")
+  # cnames[theta2_mask] <- paste("theta2", og_units, sep = "_")
+
+
+  # colnames(post_samps) <- cnames
+  ret <- list(
+    posterior_samples = mcmc_list,
+    data_list = data_list,
+    model_text = model_text,
+    call = args
+  )
+  class(ret) <- c("ss_ranef", "list")
+  return(ret)
+}
