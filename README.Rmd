@@ -90,7 +90,7 @@ summary(lmer(y ~ 1 + (1|Subject), data = d))
 Note, this currently only returns an MCMC list for the posterior samples
 
 ```{r}
-mv_data <- gen_mv_data(10, 10)
+mv_data <- gen_mv_data(5, 5)
 str(mv_data)
 
 mv_model <- ss_ranef_mv(Y = cbind(mv_data$y1, mv_data$y2),
