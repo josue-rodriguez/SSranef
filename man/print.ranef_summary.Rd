@@ -12,5 +12,5 @@
 \item{...}{Currently not in use}
 }
 \description{
-print.ranef_summary
+Print method for \code{ranef_summary()}
 }

@@ -7,10 +7,10 @@
 \method{print}{posterior_summary}(x, ...)
 }
 \arguments{
-\item{x}{...}
+\item{x}{An object of type \code{ss_ranef}}
 
 \item{...}{Currently not in use}
 }
 \description{
-print.posterior_summary
+Print method for \code{posterior_summary()}
 }
