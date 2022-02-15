@@ -7,15 +7,15 @@
 #' @param burnin The number of iterations to use as burning. Defaults to 1000.
 #' @param iter The number of iterations to use for estimating the parameters. Defaults to 1000.
 #' @param chains The number of MCMC chains to use. Defaults to 4.
-#' @param priors A name list to specify priors.  Defaults to NULL. See README for details.
+#' @param priors A named list to specify priors.  Defaults to NULL. See README for details.
 #' @param vars2monitor A vector containing the names of which parameters to monitor. See details below.
 #'
 #' @details The parameters that can be tracked are:
 #' \itemize{
-#'   \item alpha: The fixed-effect intercept
+#'   \item alpha: The fixed effect for the intercept
 #'   \item gamma: The inclusion indicators for the random effects
-#'   \item sigma: The residual variance
-#'   \item tau: The random effect variance
+#'   \item sigma: The residual standard deviation
+#'   \item tau: The standard deviation of the random effects
 #'   \item theta: The random effects
 #' }
 #'
@@ -87,14 +87,33 @@ ss_ranef_alpha <- function(y, unit, burnin = 1000, iter = 1000, chains = 4, prio
 
 #' ss_ranef_beta
 #'
-#' @param y ...
-#' @param X ...
-#' @param unit ...
-#' @param burnin ...
-#' @param iter ...
-#' @param chains ...
-#' @param priors ...
-#' @param vars2monitor ...
+#' `ss_ranef_beta()` fits a mixed-effects model with
+#' random intercepts and random slopes, with a spike-and-slab prior on the random slopes.
+#'
+#' @param y A vector containing the outcome
+#' @param X A vector containing the predictor
+#' @param unit A vector of the same length as `y` containing a unique identifier
+#' @param burnin The number of iterations to use as burning. Defaults to 1000.
+#' @param iter The number of iterations to use for estimating the parameters. Defaults to 1000.
+#' @param chains The number of MCMC chains to use. Defaults to 4.
+#' @param priors A named list to specify priors.  Defaults to NULL. See README for details.
+#' @param vars2monitor A vector containing the names of which parameters to monitor. See details below.
+#'
+#'
+#' @details The parameters that can be tracked are:
+#' \itemize{
+#'   \item alpha: The fixed effect for the intercept
+#'   \item beta: The fixed effect for the slope
+#'   \item gamma: The inclusion indicators for the slope random effects
+#'   \item rho: The correlation between theta1 and theta2
+#'   \item sigma: The residual standard deviation
+#'   \item tau1: The standard deviation for alpha
+#'   \item tau2: The standard deviation for beta
+#'   \item theta1: The random effects for alpha
+#'   \item theta2: The random effects for beta
+#' }
+#'
+#' @return An object of type \code{ssranef}.
 #'
 #' @importFrom rjags jags.model coda.samples
 #' @importFrom stats update
@@ -102,7 +121,7 @@ ss_ranef_alpha <- function(y, unit, burnin = 1000, iter = 1000, chains = 4, prio
 
 
 ss_ranef_beta <- function(y, X, unit, burnin = 1000, iter = 1000, chains = 4, priors = NULL,
-                          vars2monitor = c("alpha", "beta", "gamma", "sigma", "tau1", "tau2", "rho", "theta1", "theta2")) {
+                          vars2monitor = c("alpha", "beta", "gamma", "rho", "sigma", "tau1", "tau2", "theta1", "theta2")) {
   args <- match.call()
 
   if (is.null(priors)) {
@@ -174,7 +193,7 @@ ss_ranef_beta <- function(y, X, unit, burnin = 1000, iter = 1000, chains = 4, pr
 
 
 ss_ranef_mv <- function(Y, X, unit, burnin = 1000, iter = 1000, chains = 4, priors = NULL,
-                          vars2monitor =c("B", "theta", "gamma1", "gamma2", "sigma", "Tau", "rb", "rw")) {
+                          vars2monitor = c("B", "theta", "gamma1", "gamma2", "sigma", "Tau", "rb", "rw")) {
   args <- match.call()
 
   if (is.null(priors)) {

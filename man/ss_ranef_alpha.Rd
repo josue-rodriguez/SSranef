@@ -25,12 +25,12 @@ ss_ranef_alpha(
 
 \item{chains}{The number of MCMC chains to use. Defaults to 4.}
 
-\item{priors}{A name list to specify priors.  Defaults to NULL. See README for details.}
+\item{priors}{A named list to specify priors.  Defaults to NULL. See README for details.}
 
 \item{vars2monitor}{A vector containing the names of which parameters to monitor. See details below.}
 }
 \value{
-An object of type \code{ssranef}
+An object of type \code{ssranef}.
 }
 \description{
 \code{ss_ranef_alpha()} fits a random intercepts model with a spike-and-slab prior on the random effects
@@ -38,10 +38,10 @@ An object of type \code{ssranef}
 \details{
 The parameters that can be tracked are:
 \itemize{
-\item alpha: The fixed-effect intercept
+\item alpha: The fixed effect for the intercept
 \item gamma: The inclusion indicators for the random effects
-\item sigma: The residual variance
-\item tau: The random effect variance
+\item sigma: The residual standard deviation
+\item tau: The standard deviation of the random effects
 \item theta: The random effects
 }
 }
