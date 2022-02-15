@@ -7,14 +7,14 @@
 caterpillar_plot(obj, ci = 0.9, col_id = TRUE, ...)
 }
 \arguments{
-\item{obj}{...}
+\item{obj}{An object of type \code{ss_ranef}.}
 
-\item{ci}{...}
+\item{ci}{The width of the credible interval that should be used. Defaults to 0.9.}
 
-\item{col_id}{...}
+\item{col_id}{Whether the plot should color in points by their unique identifier.}
 
-\item{...}{Currently not in use}
+\item{...}{Currently not in use.}
 }
 \description{
-caterpillar_plot
+Create a caterpillar plot of the random effects produced by \code{ss_ranef} models.
 }
