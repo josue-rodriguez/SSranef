@@ -1,9 +1,12 @@
 #' caterpillar_plot
 #'
-#' @param obj ...
-#' @param ci ...
-#' @param col_id ...
-#' @param ... Currently not in use
+#' Create a caterpillar plot of the random effects produced by `ss_ranef` models.
+#'
+#'
+#' @param obj An object of type `ss_ranef`.
+#' @param ci The width of the credible interval that should be used. Defaults to 0.9.
+#' @param col_id Whether the plot should color in points by their unique identifier.
+#' @param ... Currently not in use.
 #'
 #' @import ggplot2 patchwork
 #' @export
@@ -83,9 +86,9 @@ caterpillar_plot <- function(obj, ci = 0.9, col_id = TRUE, ...) {
 
 #' pip_plot
 #'
-#' @param obj ...
-#' @param pip_line ...
-#' @param col_id ...
+#' @param obj An object of type `ss_ranef`
+#' @param pip_line Where the line denoting a posterior inclusion cut-off should be drawn. Defaults to 0.5.
+#' @param col_id Whether the plot should color in points by their unique identifier.
 #' @param ... Currently not in use
 #'
 #' @import ggplot2
