@@ -6,6 +6,11 @@
 \usage{
 gen_mv_data(n, n_j)
 }
+\arguments{
+\item{n}{...}
+
+\item{n_j}{...}
+}
 \description{
 gen_mv_data
 }

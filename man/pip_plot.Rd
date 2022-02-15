@@ -6,6 +6,15 @@
 \usage{
 pip_plot(obj, pip_line = 0.5, col_id = TRUE, ...)
 }
+\arguments{
+\item{obj}{...}
+
+\item{pip_line}{...}
+
+\item{col_id}{...}
+
+\item{...}{Currently not in use}
+}
 \description{
 pip_plot
 }

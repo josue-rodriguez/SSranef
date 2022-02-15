@@ -1,7 +1,10 @@
 #' gen_mv_data
 #'
+#' @param n ...
+#' @param n_j ...
+#'
 #' @importMethodsFrom Matrix t
-#' @import Matrix
+#' @importFrom Matrix sparseMatrix
 #' @export
 gen_mv_data <- function(n, n_j) {
   N <- n * n_j

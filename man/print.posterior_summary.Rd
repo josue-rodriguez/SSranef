@@ -4,7 +4,12 @@
 \alias{print.posterior_summary}
 \title{print.posterior_summary}
 \usage{
-print.posterior_summary(x, ...)
+\method{print}{posterior_summary}(x, ...)
+}
+\arguments{
+\item{x}{...}
+
+\item{...}{Currently not in use}
 }
 \description{
 print.posterior_summary

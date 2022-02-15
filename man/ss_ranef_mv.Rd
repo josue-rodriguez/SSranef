@@ -16,6 +16,8 @@ ss_ranef_mv(
 )
 }
 \arguments{
+\item{Y}{...}
+
 \item{X}{...}
 
 \item{unit}{...}
@@ -29,8 +31,6 @@ ss_ranef_mv(
 \item{priors}{...}
 
 \item{vars2monitor}{...}
-
-\item{y}{...}
 }
 \description{
 ss_ranef_mv

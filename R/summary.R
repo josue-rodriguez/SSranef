@@ -1,5 +1,11 @@
 #' posterior_summary
 #'
+#' @param obj ...
+#' @param ci ...
+#' @param as_df ...
+#' @param digits ...
+#'
+#'
 #' @export
 
 posterior_summary <- function(obj, ci = 0.9, as_df = FALSE, digits = 2) {
@@ -40,6 +46,10 @@ posterior_summary <- function(obj, ci = 0.9, as_df = FALSE, digits = 2) {
 
 #' print.posterior_summary
 #'
+#' @param x ...
+#' @param ... Currently not in use
+#'
+#'
 #' @export
 print.posterior_summary <- function(x, ...) {
   cat("Linear mixed model fit with SSranef\n")
@@ -51,6 +61,14 @@ print.posterior_summary <- function(x, ...) {
 
 
 #' ranef_summary
+#'
+#'
+#' @param obj ...
+#' @param ci ...
+#' @param as_df ...
+#' @param digits ...
+#'
+#'
 #'
 #' @export
 ranef_summary <- function(obj, ci = 0.9, as_df = FALSE, digits = 2) {
@@ -101,6 +119,10 @@ ranef_summary <- function(obj, ci = 0.9, as_df = FALSE, digits = 2) {
 }
 
 #' print.ranef_summary
+#'
+#' @param x ...
+#' @param ... Currently not in use
+#'
 #'
 #' @export
 print.ranef_summary <- function(x, ...) {

@@ -6,6 +6,15 @@
 \usage{
 caterpillar_plot(obj, ci = 0.9, col_id = TRUE, ...)
 }
+\arguments{
+\item{obj}{...}
+
+\item{ci}{...}
+
+\item{col_id}{...}
+
+\item{...}{Currently not in use}
+}
 \description{
 caterpillar_plot
 }

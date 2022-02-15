@@ -1,6 +1,9 @@
 #' caterpillar_plot
 #'
-#'
+#' @param obj ...
+#' @param ci ...
+#' @param col_id ...
+#' @param ... Currently not in use
 #'
 #' @import ggplot2 patchwork
 #' @export
@@ -80,7 +83,10 @@ caterpillar_plot <- function(obj, ci = 0.9, col_id = TRUE, ...) {
 
 #' pip_plot
 #'
-#'
+#' @param obj ...
+#' @param pip_line ...
+#' @param col_id ...
+#' @param ... Currently not in use
 #'
 #' @import ggplot2
 #' @export

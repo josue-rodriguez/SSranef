@@ -6,6 +6,15 @@
 \usage{
 posterior_summary(obj, ci = 0.9, as_df = FALSE, digits = 2)
 }
+\arguments{
+\item{obj}{...}
+
+\item{ci}{...}
+
+\item{as_df}{...}
+
+\item{digits}{...}
+}
 \description{
 posterior_summary
 }
