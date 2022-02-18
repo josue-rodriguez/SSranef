@@ -216,3 +216,31 @@ ss_ranef_mv <- function(Y, X, unit, burnin = 1000, iter = 1000, chains = 4, prio
   class(ret) <- c("ss_ranef", "list")
   return(ret)
 }
+
+
+
+
+# jcov2cor <- function(x) {
+#   x %>%
+#     select(matches("Tau\\[")) %>%
+#     colMeans() -> x
+#   m <- diag(4)
+#   diag(m) <- c(x["Tau[1,1]"], x["Tau[2,2]"], x["Tau[3,3]"],x["Tau[4,4]"])
+#   m[lower.tri(m)] <- c(
+#     x["Tau[1,2]"],
+#     x["Tau[1,3]"],
+#     x["Tau[1,4]"],
+#     x["Tau[2,3]"],
+#     x["Tau[2,4]"],
+#     x["Tau[3,4]"]
+#   )
+#
+#   m[upper.tri(m)] <- t(m)[upper.tri(m)]
+#
+#   return(m)
+# }
+#
+# diag(sqrt(jcov2cor(post_df)))
+# post_df %>%
+#   select(matches("rho\\[")) %>%
+#   colMeans()

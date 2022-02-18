@@ -4,3 +4,6 @@
 .Ruserdata
 .rds
 data-raw
+R/mv_jags.R
+R/mv_jags2.R
+R/xx.R
