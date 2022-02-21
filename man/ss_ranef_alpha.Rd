@@ -19,7 +19,7 @@ ss_ranef_alpha(
 
 \item{unit}{A vector of the same length as \code{y} containing a unique identifier}
 
-\item{burnin}{The number of iterations to use as burning. Defaults to 1000.}
+\item{burnin}{The number of iterations to use as burnin. Defaults to 1000.}
 
 \item{iter}{The number of iterations to use for estimating the parameters. Defaults to 1000.}
 

@@ -17,6 +17,12 @@ posterior_summary <- function(obj, ci = 0.9, as_df = FALSE, digits = 2) {
     cnames <- c("alpha", "beta", "sigma", "tau1", "tau2", "rho")
   } else if (grepl("alpha", type)) {
     cnames <- c("alpha", "sigma", "tau")
+  } else if (grepl("mv", type)) {
+    cnames <- c("B_1_1", "B_1_2", "B_2_1", "B_2_2",
+                "rb_1_2", "rb_1_3", "rb_1_4", "rb_2_3", "rb_2_4", "rb_3_4",
+                "rw",
+                "sigma_1", "sigma_2",
+                "Tau_1_1", "Tau_2_2", "Tau_3_3", "Tau_4_4")
   } else {
     stop("obj must be an ss_ranef object.")
   }
@@ -87,6 +93,8 @@ ranef_summary <- function(obj, ci = 0.9, as_df = FALSE, digits = 2) {
                     grep("theta2", all_cnames, value = TRUE))
   } else if (grepl("alpha", type)) {
     theta_names <- c(grep("theta", all_cnames, value = TRUE))
+  } else if (grepl("mv", type)) {
+     stop("Multivariate models not yet supported.")
   } else {
     stop("obj must be an ss_ranef object.")
   }

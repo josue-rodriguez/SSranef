@@ -87,20 +87,18 @@ summary(lmer(y ~ 1 + (1|Subject), data = d))
 
 ## Multivariate model
 
-Note, this currently only returns an MCMC list for the posterior samples
-
 ```{r}
 mv_data <- gen_mv_data(5, 5)
 str(mv_data)
 
 mv_model <- ss_ranef_mv(Y = cbind(mv_data$y1, mv_data$y2),
-                 X = mv_data$x,
-                 unit = mv_data$id,
-                 burnin = 100,
-                 iter = 500,
-                 chains = 4)
+                        X = mv_data$x,
+                        unit = mv_data$id,
+                        burnin = 100,
+                        iter = 500,
+                        chains = 4)
 
-summary(mv_model$posterior_samples)
+posterior_summary(mv_model)
 ```
 
 
