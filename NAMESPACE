@@ -3,6 +3,7 @@
 S3method(print,posterior_summary)
 S3method(print,ranef_summary)
 export(caterpillar_plot)
+export(funnel_plot)
 export(gen_mv_data)
 export(pip_plot)
 export(posterior_summary)

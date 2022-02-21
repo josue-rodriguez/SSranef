@@ -9,9 +9,12 @@
 SSranef is an R package for random effects selection that corresponds to
 the models described in Rodriguez, Williams, and Rast (2021).
 Specifically, `ss_ranef_alpha()` fits a random intercepts model with a
-spike-and-slab prior on the random effects, and `ss_ranef_beta()` fits a
+spike-and-slab prior on the random effects and `ss_ranef_beta()` fits a
 model with both random intercepts and random slopes, with a
-spike-and-slab prior on the random effects for the slope.
+spike-and-slab prior on the random effects for the slope. The function
+`ss_ranef_mv()` fits a multivariate mixed-effects models for two
+outcomes and places a spike-and-slab prior on the random slope for each
+outcome.
 
 ## Installation
 
@@ -58,9 +61,9 @@ posterior_summary(alpha, ci = 0.90, digits = 2)
 #> Call: ss_ranef_alpha(y = d$y, unit = d$Subject)
 #> 
 #>       Post.mean q05   q95 
-#> alpha 0.09      -0.08 0.26
-#> sigma 0.79       0.72 0.86
-#> tau   0.97       0.62 1.48
+#> alpha 0.08      -0.08 0.24
+#> sigma 0.79       0.72 0.87
+#> tau   0.98       0.60 1.51
 ```
 
 ``` r
@@ -69,24 +72,24 @@ ranef_summary(alpha, ci = 0.95, digits = 2)
 #> Call: ss_ranef_alpha(y = d$y, unit = d$Subject)
 #> 
 #>           Post.mean q025  q975  PIP  BF_10 BF_01
-#> theta_308  0.56      0.00  1.12 0.87  6.97 0.14 
-#> theta_309 -1.45     -1.96 -0.95 1.00   Inf 0.00 
-#> theta_310 -1.19     -1.71 -0.68 1.00   Inf 0.00 
-#> theta_330  0.00     -0.33  0.29 0.23  0.30 3.31 
-#> theta_331  0.03     -0.22  0.43 0.25  0.33 3.05 
-#> theta_332  0.02     -0.25  0.40 0.24  0.31 3.19 
-#> theta_333  0.07     -0.13  0.59 0.31  0.44 2.26 
-#> theta_334 -0.04     -0.49  0.18 0.26  0.35 2.88 
-#> theta_335 -0.87     -1.40 -0.30 0.99 92.02 0.01 
-#> theta_337  1.18      0.66  1.68 1.00   Inf 0.00 
-#> theta_349 -0.30     -0.94  0.00 0.62  1.62 0.62 
-#> theta_350  0.04     -0.18  0.51 0.26  0.35 2.83 
-#> theta_351 -0.07     -0.60  0.13 0.31  0.45 2.21 
-#> theta_352  0.43      0.00  1.06 0.75  3.02 0.33 
-#> theta_369  0.01     -0.27  0.34 0.22  0.27 3.64 
-#> theta_370 -0.06     -0.54  0.14 0.28  0.40 2.53 
-#> theta_371 -0.03     -0.46  0.18 0.23  0.29 3.42 
-#> theta_372  0.09     -0.12  0.62 0.33  0.50 2.00
+#> theta_308  0.58      0.00  1.14 0.87  6.94 0.14 
+#> theta_309 -1.43     -1.96 -0.91 1.00   Inf 0.00 
+#> theta_310 -1.18     -1.70 -0.67 1.00   Inf 0.00 
+#> theta_330  0.00     -0.28  0.31 0.22  0.28 3.55 
+#> theta_331  0.03     -0.20  0.44 0.24  0.32 3.15 
+#> theta_332  0.02     -0.24  0.42 0.24  0.32 3.12 
+#> theta_333  0.08     -0.11  0.61 0.30  0.42 2.36 
+#> theta_334 -0.03     -0.47  0.19 0.24  0.31 3.19 
+#> theta_335 -0.86     -1.39 -0.32 0.99 92.02 0.01 
+#> theta_337  1.19      0.70  1.69 1.00   Inf 0.00 
+#> theta_349 -0.27     -0.91  0.00 0.59  1.41 0.71 
+#> theta_350  0.06     -0.13  0.51 0.28  0.39 2.56 
+#> theta_351 -0.07     -0.56  0.13 0.30  0.42 2.39 
+#> theta_352  0.46      0.00  1.07 0.79  3.87 0.26 
+#> theta_369  0.02     -0.25  0.40 0.23  0.31 3.27 
+#> theta_370 -0.06     -0.56  0.13 0.27  0.37 2.68 
+#> theta_371 -0.03     -0.45  0.21 0.24  0.31 3.22 
+#> theta_372  0.09     -0.12  0.64 0.34  0.51 1.97
 ```
 
 ``` r
@@ -119,12 +122,12 @@ posterior_summary(beta, digits = 2)
 #> Call: ss_ranef_beta(y = d$y, X = d$Days, unit = d$Subject)
 #> 
 #>       Post.mean q05   q95  
-#> alpha -0.81     -1.01 -0.62
+#> alpha -0.84     -1.05 -0.62
 #> beta   0.19      0.15  0.22
 #> sigma  0.47      0.42  0.51
-#> tau1   0.44      0.26  0.66
-#> tau2   0.16      0.10  0.24
-#> rho    0.14     -0.38  0.71
+#> tau1   0.46      0.25  0.69
+#> tau2   0.16      0.10  0.27
+#> rho    0.18     -0.37  0.86
 ```
 
 ``` r
@@ -133,42 +136,42 @@ ranef_summary(beta, digits = 2)
 #> Call: ss_ranef_beta(y = d$y, X = d$Days, unit = d$Subject)
 #> 
 #>            Post.mean q05   q95   PIP  BF_10  BF_01
-#> theta1_308 -0.01     -0.42  0.38   NA     NA   NA 
-#> theta1_309 -0.67     -1.15 -0.27   NA     NA   NA 
-#> theta1_310 -0.68     -1.21 -0.25   NA     NA   NA 
-#> theta1_330  0.29     -0.11  0.76   NA     NA   NA 
-#> theta1_331  0.26     -0.09  0.67   NA     NA   NA 
-#> theta1_332  0.12     -0.19  0.44   NA     NA   NA 
-#> theta1_333  0.25     -0.07  0.58   NA     NA   NA 
-#> theta1_334 -0.09     -0.42  0.23   NA     NA   NA 
-#> theta1_335  0.01     -0.39  0.44   NA     NA   NA 
-#> theta1_337  0.52      0.14  0.96   NA     NA   NA 
-#> theta1_349 -0.41     -0.79 -0.08   NA     NA   NA 
-#> theta1_350 -0.23     -0.70  0.21   NA     NA   NA 
-#> theta1_351 -0.04     -0.39  0.36   NA     NA   NA 
-#> theta1_352  0.41     -0.02  0.81   NA     NA   NA 
-#> theta1_369  0.07     -0.25  0.39   NA     NA   NA 
-#> theta1_370 -0.35     -0.84  0.07   NA     NA   NA 
-#> theta1_371 -0.05     -0.38  0.27   NA     NA   NA 
-#> theta1_372  0.25     -0.10  0.57   NA     NA   NA 
-#> theta2_308  0.17      0.09  0.25 1.00 799.00 0.00 
-#> theta2_309 -0.17     -0.25 -0.07 0.97  37.46 0.03 
-#> theta2_310 -0.10     -0.19  0.00 0.85   5.46 0.18 
-#> theta2_330 -0.06     -0.17  0.00 0.67   2.02 0.50 
-#> theta2_331 -0.03     -0.12  0.00 0.44   0.79 1.27 
-#> theta2_332  0.00     -0.04  0.04 0.25   0.34 2.96 
-#> theta2_333  0.00     -0.04  0.03 0.23   0.30 3.29 
-#> theta2_334  0.01     -0.02  0.07 0.27   0.36 2.77 
+#> theta1_308  0.02     -0.40  0.42   NA     NA   NA 
+#> theta1_309 -0.64     -1.09 -0.23   NA     NA   NA 
+#> theta1_310 -0.69     -1.19 -0.23   NA     NA   NA 
+#> theta1_330  0.30     -0.12  0.79   NA     NA   NA 
+#> theta1_331  0.28     -0.08  0.71   NA     NA   NA 
+#> theta1_332  0.14     -0.18  0.48   NA     NA   NA 
+#> theta1_333  0.28     -0.05  0.63   NA     NA   NA 
+#> theta1_334 -0.08     -0.42  0.25   NA     NA   NA 
+#> theta1_335  0.02     -0.38  0.43   NA     NA   NA 
+#> theta1_337  0.54      0.15  0.97   NA     NA   NA 
+#> theta1_349 -0.38     -0.73 -0.05   NA     NA   NA 
+#> theta1_350 -0.19     -0.65  0.23   NA     NA   NA 
+#> theta1_351 -0.04     -0.40  0.33   NA     NA   NA 
+#> theta1_352  0.46      0.03  0.88   NA     NA   NA 
+#> theta1_369  0.09     -0.24  0.44   NA     NA   NA 
+#> theta1_370 -0.35     -0.84  0.06   NA     NA   NA 
+#> theta1_371 -0.02     -0.35  0.33   NA     NA   NA 
+#> theta1_372  0.26     -0.08  0.61   NA     NA   NA 
+#> theta2_308  0.17      0.09  0.25 1.00 570.43 0.00 
+#> theta2_309 -0.17     -0.25 -0.08 0.99  73.07 0.01 
+#> theta2_310 -0.09     -0.19  0.00 0.79   3.67 0.27 
+#> theta2_330 -0.06     -0.16  0.00 0.64   1.78 0.56 
+#> theta2_331 -0.03     -0.12  0.00 0.44   0.77 1.30 
+#> theta2_332  0.00     -0.04  0.04 0.25   0.33 3.06 
+#> theta2_333  0.00     -0.03  0.03 0.25   0.33 3.07 
+#> theta2_334  0.01     -0.02  0.07 0.28   0.38 2.62 
 #> theta2_335 -0.20     -0.28 -0.12 1.00    Inf 0.00 
-#> theta2_337  0.17      0.08  0.25 0.99  73.07 0.01 
-#> theta2_349  0.01     -0.02  0.07 0.28   0.39 2.55 
-#> theta2_350  0.11      0.00  0.20 0.91  10.63 0.09 
-#> theta2_351 -0.03     -0.12  0.00 0.45   0.83 1.20 
-#> theta2_352  0.04      0.00  0.14 0.55   1.21 0.83 
-#> theta2_369  0.01     -0.03  0.06 0.27   0.37 2.71 
-#> theta2_370  0.06      0.00  0.17 0.62   1.63 0.61 
-#> theta2_371 -0.01     -0.07  0.02 0.29   0.42 2.40 
-#> theta2_372  0.01     -0.01  0.07 0.26   0.36 2.78
+#> theta2_337  0.17      0.09  0.25 1.00 306.69 0.00 
+#> theta2_349  0.01     -0.02  0.07 0.26   0.35 2.88 
+#> theta2_350  0.11      0.00  0.20 0.89   8.05 0.12 
+#> theta2_351 -0.02     -0.11  0.00 0.43   0.76 1.32 
+#> theta2_352  0.04      0.00  0.14 0.52   1.08 0.92 
+#> theta2_369  0.01     -0.01  0.06 0.26   0.35 2.87 
+#> theta2_370  0.06      0.00  0.17 0.67   2.03 0.49 
+#> theta2_371 -0.01     -0.07  0.02 0.27   0.36 2.75 
+#> theta2_372  0.01     -0.01  0.08 0.30   0.42 2.39
 ```
 
 ``` r
@@ -189,9 +192,9 @@ pip_plot(beta)
 mv_data <- gen_mv_data(5, 5)
 str(mv_data)
 #> 'data.frame':    25 obs. of  4 variables:
-#>  $ y1: num  1.47 3.81 5.81 3.79 3.22 ...
-#>  $ y2: num  0.0613 1.6811 3.1749 1.1092 0.271 ...
-#>  $ x : num  0 0 1 0 0 0 0 0 1 0 ...
+#>  $ y1: num  0.158 0.661 5.618 4.208 1.802 ...
+#>  $ y2: num  8.43 1.92 7.65 7.79 8.34 ...
+#>  $ x : num  1 0 1 1 1 1 0 1 1 1 ...
 #>  $ id: Factor w/ 5 levels "1","2","3","4",..: 1 1 1 1 1 2 2 2 2 2 ...
 
 mv_model <- ss_ranef_mv(Y = cbind(mv_data$y1, mv_data$y2),
@@ -215,24 +218,24 @@ posterior_summary(mv_model)
 #> Call: ss_ranef_mv(Y = cbind(mv_data$y1, mv_data$y2), X = mv_data$x, 
 #>     unit = mv_data$id, burnin = 100, iter = 500, chains = 4)
 #> 
-#>         Post.mean q05   q95  
-#> B_1_1    3.01      2.31  3.68
-#> B_1_2    1.87      0.37  3.62
-#> B_2_1    2.72      2.04  3.47
-#> B_2_2    4.74      2.30  6.79
-#> rb_1_2   0.04     -0.98  0.97
-#> rb_1_3  -0.08     -0.98  0.97
-#> rb_1_4  -0.10     -0.99  0.99
-#> rb_2_3   0.00     -0.97  0.98
-#> rb_2_4  -0.47     -0.99  0.95
-#> rb_3_4   0.08     -0.98  0.99
-#> rw      -0.20     -0.52  0.14
-#> sigma_1  1.65      1.25  2.17
-#> sigma_2  1.69      1.27  2.37
-#> Tau_1_1  8.74      0.29 34.63
-#> Tau_2_2  6.98      0.30 25.87
-#> Tau_3_3  8.55      0.24 37.29
-#> Tau_4_4 17.05      1.60 49.79
+#>         Post.mean q05   q95   
+#> B_1_1    3.32      1.68   4.91
+#> B_1_2   -0.85     -3.32   1.70
+#> B_2_1    3.27      2.75   3.80
+#> B_2_2    3.09      2.00   4.53
+#> rb_1_2   0.14     -0.98   0.99
+#> rb_1_3   0.19     -0.97   1.00
+#> rb_1_4  -0.13     -0.99   0.99
+#> rb_2_3   0.08     -0.98   0.99
+#> rb_2_4   0.07     -0.99   0.99
+#> rb_3_4  -0.02     -0.99   0.99
+#> rw       0.20     -0.16   0.53
+#> sigma_1  3.79      2.88   4.95
+#> sigma_2  1.06      0.79   1.42
+#> Tau_1_1 67.74      0.26 228.48
+#> Tau_2_2 12.65      0.37  47.95
+#> Tau_3_3 25.13      0.32  69.44
+#> Tau_4_4 18.28      2.49  56.27
 ```
 
 ## Priors
@@ -260,25 +263,25 @@ ranef_summary(fit)
 #> Linear mixed model fit with SSranef
 #> Call: ss_ranef_alpha(y = d$y, unit = d$Subject, priors = priors)
 #> 
-#>           Post.mean q05   q95   PIP  BF_10   BF_01
-#> theta_308  0.62      0.05  1.07 0.96   24.00 0.04 
-#> theta_309 -1.38     -1.82 -0.93 1.00     Inf 0.00 
-#> theta_310 -1.13     -1.57 -0.69 1.00 3999.00 0.00 
-#> theta_330  0.01     -0.32  0.37 0.51    1.04 0.97 
-#> theta_331  0.07     -0.21  0.48 0.53    1.12 0.89 
-#> theta_332  0.05     -0.25  0.45 0.52    1.07 0.93 
-#> theta_333  0.15     -0.13  0.63 0.63    1.71 0.58 
-#> theta_334 -0.06     -0.47  0.25 0.54    1.16 0.86 
-#> theta_335 -0.82     -1.27 -0.37 0.99  180.82 0.01 
-#> theta_337  1.18      0.75  1.63 1.00     Inf 0.00 
-#> theta_349 -0.35     -0.84  0.00 0.81    4.29 0.23 
-#> theta_350  0.12     -0.15  0.55 0.58    1.36 0.74 
-#> theta_351 -0.12     -0.57  0.14 0.57    1.34 0.75 
-#> theta_352  0.53      0.00  0.98 0.92   12.25 0.08 
-#> theta_369  0.04     -0.25  0.42 0.50    1.00 1.00 
-#> theta_370 -0.10     -0.53  0.20 0.56    1.28 0.78 
-#> theta_371 -0.06     -0.45  0.23 0.53    1.13 0.88 
-#> theta_372  0.17     -0.10  0.64 0.61    1.59 0.63
+#>           Post.mean q05   q95   PIP  BF_10  BF_01
+#> theta_308  0.62      0.06  1.06 0.96  24.16 0.04 
+#> theta_309 -1.37     -1.83 -0.93 1.00    Inf 0.00 
+#> theta_310 -1.13     -1.57 -0.69 1.00    Inf 0.00 
+#> theta_330  0.01     -0.31  0.36 0.51   1.03 0.97 
+#> theta_331  0.07     -0.21  0.49 0.55   1.22 0.82 
+#> theta_332  0.06     -0.23  0.44 0.53   1.11 0.90 
+#> theta_333  0.15     -0.11  0.59 0.61   1.57 0.64 
+#> theta_334 -0.05     -0.45  0.23 0.51   1.04 0.96 
+#> theta_335 -0.82     -1.25 -0.40 1.00 249.00 0.00 
+#> theta_337  1.19      0.77  1.62 1.00    Inf 0.00 
+#> theta_349 -0.34     -0.82  0.00 0.80   4.04 0.25 
+#> theta_350  0.12     -0.14  0.56 0.57   1.34 0.75 
+#> theta_351 -0.11     -0.56  0.16 0.57   1.32 0.76 
+#> theta_352  0.53      0.00  0.99 0.91  10.63 0.09 
+#> theta_369  0.04     -0.24  0.42 0.50   1.00 1.00 
+#> theta_370 -0.10     -0.54  0.16 0.55   1.21 0.83 
+#> theta_371 -0.06     -0.46  0.23 0.52   1.08 0.92 
+#> theta_372  0.18     -0.10  0.65 0.66   1.90 0.53
 ```
 
 ## Building on top of SSranef models
@@ -308,3 +311,17 @@ cat(jags_model_text)
 #>   sigma ~ dt(0, 1, 3)T(0, )
 #> }
 ```
+
+# References
+
+<div id="refs" class="references csl-bib-body hanging-indent">
+
+<div id="ref-rodriguez2021" class="csl-entry">
+
+Rodriguez, Josue E, Donald R Williams, and Philippe Rast. 2021. “Who Is
+and Is Not" Average’"? Random Effects Selection with Spike-and-Slab
+Priors.” <https://doi.org/10.31234/osf.io/4d9tv>.
+
+</div>
+
+</div>

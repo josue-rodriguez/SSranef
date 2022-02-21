@@ -133,3 +133,49 @@ pip_plot <- function(obj, pip_line = 0.5, col_id = TRUE, ...) {
   }
 }
 
+
+#' funnel_plot
+#'
+#' @param obj An object fit with `ss_ranef_mv()`
+#' @param ... Currently not in use
+#'
+#' @import ggplot2
+#' @export
+
+funnel_plot <- function(obj, pip_line = 0.5, col_id = TRUE, ...) {
+  type <- obj$call[1]
+  if (!grepl("mv", type)) stop("funnel_plot() only works with objects produced by ss_ranef_mv()")
+
+  ranef_summ <- ranef_summary(obj, as_df = TRUE)
+
+  pips_df <- subset(ranef_summ, !is.na(PIP))
+
+
+  pips_df$model <- sapply(row.names(pips_df), function(x) strsplit(x, split = "_")[[1]][3])
+  pips_df$model <- ifelse(pips_df$model == "2", "1", "2")
+
+  pips_df$pip <- pips_df$PIP
+  pips_df$pip[pips_df$model == "1"] <- -pips_df$PIP[pips_df$model == "1"]
+
+
+
+  pips_df$id <- factor(rep(1:obj$data_list$J, 2))
+
+  plot_order <- subset(pips_df, model == "1")
+  plot_order <- plot_order[order(plot_order$PIP, decreasing = F), ]
+
+
+
+  p <-
+    ggplot(pips_df, aes(id, pip, fill = model)) +
+    geom_col(col = "black", width = 1) +
+    scale_x_discrete(limits = plot_order$id) +
+    scale_y_continuous(labels = abs(seq(-1, 1, 0.5)),
+                       breaks = seq(-1, 1, 0.5)) +
+    coord_flip()
+
+  return(p)
+
+
+}
+
