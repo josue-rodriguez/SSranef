@@ -6,6 +6,11 @@
 \usage{
 gen_mv_data(n, n_j)
 }
+\arguments{
+\item{n}{A numeric specifying the number of units.}
+
+\item{n_j}{A numeric specifying the number of observations per unit.}
+}
 \description{
 gen_mv_data
 }

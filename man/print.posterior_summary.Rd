@@ -4,8 +4,13 @@
 \alias{print.posterior_summary}
 \title{print.posterior_summary}
 \usage{
-print.posterior_summary(x, ...)
+\method{print}{posterior_summary}(x, ...)
+}
+\arguments{
+\item{x}{An object of type \code{ss_ranef}}
+
+\item{...}{Currently not in use}
 }
 \description{
-print.posterior_summary
+Print method for \code{posterior_summary()}
 }

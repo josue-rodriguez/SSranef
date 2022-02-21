@@ -6,6 +6,15 @@
 \usage{
 pip_plot(obj, pip_line = 0.5, col_id = TRUE, ...)
 }
+\arguments{
+\item{obj}{An object of type \code{ss_ranef}}
+
+\item{pip_line}{Where the line denoting a posterior inclusion cut-off should be drawn. Defaults to 0.5.}
+
+\item{col_id}{Whether the plot should color in points by their unique identifier.}
+
+\item{...}{Currently not in use}
+}
 \description{
 pip_plot
 }

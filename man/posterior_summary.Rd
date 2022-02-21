@@ -6,6 +6,15 @@
 \usage{
 posterior_summary(obj, ci = 0.9, as_df = FALSE, digits = 2)
 }
+\arguments{
+\item{obj}{An object of type \code{ss_ranef}}
+
+\item{ci}{The width of the credible interval that should be used. Defaults to 0.9.}
+
+\item{as_df}{Whether a \code{data.frame} should instead be returned. Defaults to FALSE.}
+
+\item{digits}{The number of digits to which the output should be rounded. Defaults to 2.}
+}
 \description{
-posterior_summary
+Summarizes the posterior distribution contained in \code{ss_ranef} objects
 }

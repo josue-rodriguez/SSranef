@@ -11,24 +11,37 @@ ss_ranef_alpha(
   iter = 1000,
   chains = 4,
   priors = NULL,
-  vars2monitor = c("alpha", "gamma", "lambda", "sigma", "tau", "theta")
+  vars2monitor = c("alpha", "gamma", "sigma", "tau", "theta")
 )
 }
 \arguments{
-\item{y}{...}
+\item{y}{A vector containing the outcome}
 
-\item{unit}{...}
+\item{unit}{A vector of the same length as \code{y} containing a unique identifier}
 
-\item{burnin}{...}
+\item{burnin}{The number of iterations to use as burning. Defaults to 1000.}
 
-\item{iter}{...}
+\item{iter}{The number of iterations to use for estimating the parameters. Defaults to 1000.}
 
-\item{chains}{...}
+\item{chains}{The number of MCMC chains to use. Defaults to 4.}
 
-\item{priors}{...}
+\item{priors}{A named list to specify priors.  Defaults to NULL. See README for details.}
 
-\item{vars2monitor}{...}
+\item{vars2monitor}{A vector containing the names of which parameters to monitor. See details below.}
+}
+\value{
+An object of type \code{ssranef}.
 }
 \description{
-ss_ranef_alpha
+\code{ss_ranef_alpha()} fits a random intercepts model with a spike-and-slab prior on the random effects
+}
+\details{
+The parameters that can be tracked are:
+\itemize{
+\item alpha: The fixed effect for the intercept
+\item gamma: The inclusion indicators for the random effects
+\item sigma: The residual standard deviation
+\item tau: The standard deviation of the random effects
+\item theta: The random effects
+}
 }

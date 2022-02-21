@@ -1,7 +1,10 @@
 #' gen_mv_data
 #'
+#' @param n A numeric specifying the number of units.
+#' @param n_j A numeric specifying the number of observations per unit.
+#'
 #' @importMethodsFrom Matrix t
-#' @import Matrix
+#' @importFrom Matrix sparseMatrix KhatriRao
 #' @export
 gen_mv_data <- function(n, n_j) {
   N <- n * n_j

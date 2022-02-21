@@ -4,8 +4,13 @@
 \alias{print.ranef_summary}
 \title{print.ranef_summary}
 \usage{
-print.ranef_summary(x, ...)
+\method{print}{ranef_summary}(x, ...)
+}
+\arguments{
+\item{x}{...}
+
+\item{...}{Currently not in use}
 }
 \description{
-print.ranef_summary
+Print method for \code{ranef_summary()}
 }

@@ -12,27 +12,45 @@ ss_ranef_beta(
   iter = 1000,
   chains = 4,
   priors = NULL,
-  vars2monitor = c("alpha", "beta", "gamma", "sigma", "tau1", "tau2", "rho", "theta1",
+  vars2monitor = c("alpha", "beta", "gamma", "rho", "sigma", "tau1", "tau2", "theta1",
     "theta2")
 )
 }
 \arguments{
-\item{y}{...}
+\item{y}{A vector containing the outcome}
 
-\item{X}{...}
+\item{X}{A vector containing the predictor}
 
-\item{unit}{...}
+\item{unit}{A vector of the same length as \code{y} containing a unique identifier}
 
-\item{burnin}{...}
+\item{burnin}{The number of iterations to use as burning. Defaults to 1000.}
 
-\item{iter}{...}
+\item{iter}{The number of iterations to use for estimating the parameters. Defaults to 1000.}
 
-\item{chains}{...}
+\item{chains}{The number of MCMC chains to use. Defaults to 4.}
 
-\item{priors}{...}
+\item{priors}{A named list to specify priors.  Defaults to NULL. See README for details.}
 
-\item{vars2monitor}{...}
+\item{vars2monitor}{A vector containing the names of which parameters to monitor. See details below.}
+}
+\value{
+An object of type \code{ssranef}.
 }
 \description{
-ss_ranef_beta
+\code{ss_ranef_beta()} fits a mixed-effects model with
+random intercepts and random slopes, with a spike-and-slab prior on the random slopes.
+}
+\details{
+The parameters that can be tracked are:
+\itemize{
+\item alpha: The fixed effect for the intercept
+\item beta: The fixed effect for the slope
+\item gamma: The inclusion indicators for the slope random effects
+\item rho: The correlation between theta1 and theta2
+\item sigma: The residual standard deviation
+\item tau1: The standard deviation for alpha
+\item tau2: The standard deviation for beta
+\item theta1: The random effects for alpha
+\item theta2: The random effects for beta
+}
 }

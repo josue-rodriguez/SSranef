@@ -1,5 +1,13 @@
 #' posterior_summary
 #'
+#' Summarizes the posterior distribution contained in `ss_ranef` objects
+#'
+#' @param obj An object of type `ss_ranef`
+#' @param ci The width of the credible interval that should be used. Defaults to 0.9.
+#' @param as_df Whether a `data.frame` should instead be returned. Defaults to FALSE.
+#' @param digits The number of digits to which the output should be rounded. Defaults to 2.
+#'
+#'
 #' @export
 
 posterior_summary <- function(obj, ci = 0.9, as_df = FALSE, digits = 2) {
@@ -40,6 +48,13 @@ posterior_summary <- function(obj, ci = 0.9, as_df = FALSE, digits = 2) {
 
 #' print.posterior_summary
 #'
+#' Print method for `posterior_summary()`
+#'
+#'
+#' @param x An object of type `ss_ranef`
+#' @param ... Currently not in use
+#'
+#'
 #' @export
 print.posterior_summary <- function(x, ...) {
   cat("Linear mixed model fit with SSranef\n")
@@ -52,7 +67,16 @@ print.posterior_summary <- function(x, ...) {
 
 #' ranef_summary
 #'
+#' Summarizes the posterior distribution of the random effects contained in `ss_ranef` objects
+#'
+#' @param obj An object of type `ss_ranef`
+#' @param ci The width of the credible interval that should be used. Defaults to 0.9.
+#' @param as_df Whether a `data.frame` should instead be returned. Defaults to FALSE.
+#' @param digits The number of digits to which the output should be rounded. Defaults to 2.
+#'
 #' @export
+#'
+
 ranef_summary <- function(obj, ci = 0.9, as_df = FALSE, digits = 2) {
   all_cnames <- colnames(obj$posterior_samples)
   post_samps <- obj$posterior_samples
@@ -101,6 +125,12 @@ ranef_summary <- function(obj, ci = 0.9, as_df = FALSE, digits = 2) {
 }
 
 #' print.ranef_summary
+#'
+#' Print method for `ranef_summary()`
+#'
+#' @param x ...
+#' @param ... Currently not in use
+#'
 #'
 #' @export
 print.ranef_summary <- function(x, ...) {
