@@ -94,14 +94,24 @@ ranef_summary <- function(obj, ci = 0.9, as_df = FALSE, digits = 2) {
   } else if (grepl("alpha", type)) {
     theta_names <- c(grep("theta", all_cnames, value = TRUE))
   } else if (grepl("mv", type)) {
-     stop("Multivariate models not yet supported.")
+    theta_names <- c(grep("theta", all_cnames, value = TRUE))
+     # stop("Multivariate models not yet supported.")
   } else {
     stop("obj must be an ss_ranef object.")
   }
-  gamma_names <- grep("gamma", all_cnames, value = TRUE)
+
+  if (grepl("mv", type)) {
+    gamma1_names <- grep("gamma1", all_cnames, value = TRUE)
+    gamma2_names <- grep("gamma2", all_cnames, value = TRUE)
+
+    gamma1s <- post_samps[, gamma1_names]
+    gamma2s <- post_samps[, gamma2_names]
+  } else {
+    gamma_names <- grep("gamma", all_cnames, value = TRUE)
+    gammas <- post_samps[, gamma_names]
+    }
 
   thetas <- post_samps[, theta_names]
-  gammas <- post_samps[, gamma_names]
 
   lwr <- (1 - ci)/2
   upr <- 1 - lwr
@@ -109,7 +119,19 @@ ranef_summary <- function(obj, ci = 0.9, as_df = FALSE, digits = 2) {
   post_lwr <- apply(thetas, 2, function(x) quantile(x, lwr))
   post_means <- colMeans(thetas)
   post_upr <- apply(thetas, 2, function(x) quantile(x, upr))
-  pips <- if (grepl("beta", type)) c(rep(NA, ncol(thetas)/2), colMeans(gammas)) else colMeans(gammas)
+  if (grepl("beta", type)) {
+    pips <- c(rep(NA, ncol(thetas)/2), colMeans(gammas))
+    } else if (grepl("alpha", type)) {
+      pips <- colMeans(gammas)
+    } else if (grepl("mv", type)) {
+      J <- obj$data_list$J
+
+      pips <- c(rep(NA, J),
+                colMeans(gamma1s),
+                rep(NA, J),
+                colMeans(gamma2s))
+    }
+
   BF_10 <- pips / (1 - pips)
   BF_01 <- 1/BF_10
 
