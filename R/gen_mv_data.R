@@ -1,7 +1,7 @@
 #' gen_mv_data
 #'
-#' @param n ...
-#' @param n_j ...
+#' @param n A numeric specifying the number of units.
+#' @param n_j A numeric specifying the number of observations per unit.
 #'
 #' @importMethodsFrom Matrix t
 #' @importFrom Matrix sparseMatrix KhatriRao
