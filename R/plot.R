@@ -142,7 +142,7 @@ pip_plot <- function(obj, pip_line = 0.5, col_id = TRUE, ...) {
 #' @import ggplot2
 #' @export
 
-funnel_plot <- function(obj, pip_line = 0.5, col_id = TRUE, ...) {
+funnel_plot <- function(obj, ...) {
   type <- obj$call[1]
   if (!grepl("mv", type)) stop("funnel_plot() only works with objects produced by ss_ranef_mv()")
 
